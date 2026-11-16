@@ -60,7 +60,7 @@ export default function PartySpecialSection({ partyItems }: PartySpecialSectionP
             return (
               <div
                 key={item.id}
-                className="luxury-card overflow-hidden flex flex-col justify-between p-5 sm:p-6 md:p-8 border-gold/60 shadow-md relative group hover:border-gold transition-colors duration-short"
+                className="luxury-card overflow-hidden flex flex-col justify-between p-5 sm:p-6 md:p-8 border-gold/60 shadow-md relative group hover:border-gold transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl"
               >
                 <div>
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[var(--radius-card)] border border-rule mb-4 sm:mb-5 bg-paper-2">
@@ -69,7 +69,7 @@ export default function PartySpecialSection({ partyItems }: PartySpecialSectionP
                       alt={itemName}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover object-center group-hover:scale-105 transition-transform duration-long"
+                      className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                     />
                     <div className="absolute top-2.5 right-2.5 rounded-[var(--radius-card)] bg-white/95 px-2.5 py-1 font-display text-sm sm:text-base font-bold text-accent shadow-xs border border-gold/40">
                       €{Number(item.price).toFixed(2)}

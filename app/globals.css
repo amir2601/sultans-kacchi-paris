@@ -40,6 +40,11 @@ body {
   border: var(--rule-hair) solid var(--color-rule);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
+  transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+}
+
+.luxury-card:hover {
+  border-color: rgba(197, 160, 89, 0.55);
 }
 
 .btn-primary {
@@ -58,20 +63,22 @@ body {
   border: var(--rule-hair) solid var(--color-accent);
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+  transition: opacity var(--dur-short) var(--ease-out), transform 120ms var(--ease-out), background-color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
 }
 
 .btn-primary:hover {
   background-color: var(--color-accent-light);
+  box-shadow: 0 4px 12px rgba(74, 14, 23, 0.15);
 }
 
 .btn-primary:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .btn-primary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btn-primary:focus-visible {
@@ -95,7 +102,7 @@ body {
   border: var(--rule-hair) solid var(--color-accent);
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out), transform 120ms var(--ease-out), border-color var(--dur-short) var(--ease-out);
 }
 
 .btn-outline:hover {
@@ -103,12 +110,13 @@ body {
 }
 
 .btn-outline:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .btn-outline:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btn-outline:focus-visible {
@@ -132,7 +140,7 @@ body {
   border: var(--rule-hair) solid var(--color-rule);
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform 120ms var(--ease-out);
 }
 
 .btn-secondary:hover {
@@ -141,15 +149,46 @@ body {
 }
 
 .btn-secondary:active {
-  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .btn-secondary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btn-secondary:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Keyframe animations for buttery smooth dialogs and drawers */
+@keyframes smoothFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes smoothFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes smoothScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-smooth-fade {
+  animation: smoothFadeIn 250ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-smooth-scale {
+  animation: smoothScaleIn 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

@@ -220,7 +220,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
             return (
               <article
                 key={item.id}
-                className="luxury-card flex flex-col justify-between overflow-hidden hover:border-gold transition-colors duration-short group"
+                className="luxury-card flex flex-col justify-between overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:border-gold/60 group"
               >
                 {/* Image Aspect Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-paper-3">
@@ -229,7 +229,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                     alt={itemName}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover object-center group-hover:scale-105 transition-transform duration-long"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {item.is_weekly_special && (
                     <span className="absolute top-2.5 left-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold text-white shadow-xs">
@@ -303,38 +303,40 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
 
       </div>
 
-      {/* Floating Sticky Mobile Order Bar when Items are in Bag */}
-      {totalItems > 0 && (
-        <aside
-          aria-label="Current takeaway bag summary"
-          className="lg:hidden fixed bottom-4 inset-x-4 z-[var(--z-sticky)] animate-in slide-in-from-bottom-4 duration-200"
-        >
-          <div className="luxury-card border-gold bg-accent text-white p-3.5 sm:p-4 shadow-2xl flex items-center justify-between rounded-[var(--radius-card)]">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold text-accent-dark font-bold shadow-xs">
-                <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-              </div>
-              <div>
-                <span className="text-xs font-bold block text-gold-light leading-none">
-                  {totalItems} {totalItems === 1 ? t("menu.floatingSpecialtySingular") : t("menu.floatingSpecialtyPlural")} {t("menu.floatingInBag")}
-                </span>
-                <span className="font-display text-base font-bold text-white">
-                  €{totalAmount.toFixed(2)}
-                </span>
-              </div>
+      {/* Floating Sticky Mobile Order Bar when Items are in Bag with Smooth Slide In/Out */}
+      <aside
+        aria-label="Current takeaway bag summary"
+        className={`lg:hidden fixed bottom-4 inset-x-4 z-[var(--z-sticky)] transform transition-all duration-300 ease-out ${
+          totalItems > 0
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "translate-y-12 opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="luxury-card border-gold bg-accent text-white p-3.5 sm:p-4 shadow-2xl flex items-center justify-between rounded-[var(--radius-card)]">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold text-accent-dark font-bold shadow-xs">
+              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
             </div>
-
-            <button
-              type="button"
-              onClick={openCart}
-              className="bg-white text-accent hover:bg-gold-light hover:text-accent-dark font-bold text-xs px-4 py-2 rounded-[var(--radius-card)] flex items-center gap-1.5 shadow-md active:scale-95 transition-transform min-h-[38px]"
-            >
-              <span>{t("menu.viewBag")}</span>
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </button>
+            <div>
+              <span className="text-xs font-bold block text-gold-light leading-none">
+                {totalItems} {totalItems === 1 ? t("menu.floatingSpecialtySingular") : t("menu.floatingSpecialtyPlural")} {t("menu.floatingInBag")}
+              </span>
+              <span className="font-display text-base font-bold text-white">
+                €{totalAmount.toFixed(2)}
+              </span>
+            </div>
           </div>
-        </aside>
-      )}
+
+          <button
+            type="button"
+            onClick={openCart}
+            className="bg-white text-accent hover:bg-gold-light hover:text-accent-dark font-bold text-xs px-4 py-2 rounded-[var(--radius-card)] flex items-center gap-1.5 shadow-md active:scale-95 transition-all duration-150 min-h-[38px]"
+          >
+            <span>{t("menu.viewBag")}</span>
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      </aside>
     </section>
   );
 }

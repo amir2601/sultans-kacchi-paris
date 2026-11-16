@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${plusJakarta.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${plusJakarta.variable} scroll-smooth`}>
       <body className="antialiased selection:bg-gold/30">
         <LanguageProvider>
           <SettingsProvider>

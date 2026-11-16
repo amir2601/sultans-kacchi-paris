@@ -35,19 +35,24 @@ export default function CartDrawer() {
   } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Lock body scroll when cart drawer is open
+  // Lock body scroll when cart drawer is open & handle Escape key
   useEffect(() => {
     if (isCartOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isCartOpen) {
+        closeCart();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isCartOpen]);
-
-  if (!isCartOpen) return null;
+  }, [isCartOpen, closeCart]);
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,15 +147,29 @@ export default function CartDrawer() {
 
   return (
     <div
-      className="fixed inset-0 z-[var(--z-modal)] flex justify-end bg-[var(--color-scrim)] backdrop-blur-xs animate-in fade-in duration-200"
+      className={`fixed inset-0 z-[var(--z-modal)] transition-all duration-300 ease-in-out ${
+        isCartOpen ? "visible pointer-events-auto" : "invisible pointer-events-none delay-300"
+      }`}
       role="dialog"
       aria-modal="true"
+      aria-hidden={!isCartOpen}
       aria-labelledby="cart-drawer-title"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) closeCart();
-      }}
     >
-      <div className="flex h-[100dvh] w-full max-w-lg flex-col justify-between border-l border-rule bg-paper p-5 sm:p-6 md:p-8 overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-200">
+      {/* Backdrop Scrim with Smooth Fade */}
+      <div
+        className={`fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 ease-out ${
+          isCartOpen ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={closeCart}
+        aria-hidden="true"
+      />
+
+      {/* Drawer Panel with Smooth Hardware-Accelerated Slide */}
+      <div
+        className={`fixed inset-y-0 right-0 w-full max-w-lg flex flex-col justify-between border-l border-rule bg-paper p-5 sm:p-6 md:p-8 overflow-y-auto shadow-2xl transform transition-transform duration-300 ease-out ${
+          isCartOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-rule pb-4 flex-shrink-0">
@@ -257,7 +276,7 @@ export default function CartDrawer() {
                 return (
                   <div
                     key={item.id}
-                    className="flex items-center justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-2.5 sm:p-3 text-sm shadow-xs"
+                    className="flex items-center justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-2.5 sm:p-3 text-sm shadow-xs transition-all duration-200 hover:border-gold/50"
                   >
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-ink truncate text-xs sm:text-sm">{itemName}</p>
@@ -269,18 +288,18 @@ export default function CartDrawer() {
                         type="button"
                         onClick={() => updateQuantity(item.id, quantity - 1)}
                         aria-label={`Reduce quantity of ${itemName}`}
-                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
+                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center transition-all duration-150 active:scale-90"
                       >
                         <Minus className="h-3 w-3" aria-hidden="true" />
                       </button>
-                      <span className="w-5 text-center text-xs font-bold text-accent">
+                      <span className="w-5 text-center text-xs font-bold text-accent transition-transform duration-150">
                         {quantity}
                       </span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, quantity + 1)}
                         aria-label={`Increase quantity of ${itemName}`}
-                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
+                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center transition-all duration-150 active:scale-90"
                       >
                         <Plus className="h-3 w-3" aria-hidden="true" />
                       </button>
@@ -288,7 +307,7 @@ export default function CartDrawer() {
                         type="button"
                         onClick={() => removeItem(item.id)}
                         aria-label={`Remove ${itemName}`}
-                        className="ml-1 text-muted hover:text-error transition-colors p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 text-muted hover:text-error transition-colors p-1 min-w-[28px] min-h-[28px] flex items-center justify-center active:scale-90 transition-transform"
                       >
                         <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                       </button>

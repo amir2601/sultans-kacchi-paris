@@ -35,15 +35,22 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll when mobile menu is open & handle Escape key
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
     }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [mobileMenuOpen]);
 
@@ -165,127 +172,138 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Mobile Menu Hamburger Button */}
+            {/* Mobile Menu Hamburger Button with Smooth Icon Transition */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
-              className="lg:hidden p-2 rounded-[var(--radius-card)] border border-rule bg-paper-2 text-ink hover:text-accent focus-visible:outline-2 focus-visible:outline-focus min-w-[38px] min-h-[38px] flex items-center justify-center transition-colors"
+              className="lg:hidden p-2 rounded-[var(--radius-card)] border border-rule bg-paper-2 text-ink hover:text-accent focus-visible:outline-2 focus-visible:outline-focus min-w-[38px] min-h-[38px] flex items-center justify-center transition-all duration-200 active:scale-95"
             >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5" aria-hidden="true" />
-              ) : (
-                <MenuIcon className="h-5 w-5" aria-hidden="true" />
-              )}
+              <span className={`inline-flex items-center justify-center transition-transform duration-200 ${mobileMenuOpen ? "rotate-90" : "rotate-0"}`}>
+                {mobileMenuOpen ? (
+                  <X className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <MenuIcon className="h-5 w-5" aria-hidden="true" />
+                )}
+              </span>
             </button>
           </div>
 
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer & Scrim */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden">
-          {/* Backdrop Scrim */}
-          <div
-            className="fixed inset-0 top-16 sm:top-20 z-[var(--z-modal)] bg-black/45 backdrop-blur-[2px]"
-            onClick={closeMobileMenu}
-            aria-hidden="true"
-          />
+      {/* Mobile Navigation Drawer & Scrim with Smooth Transition */}
+      <div
+        className={`lg:hidden fixed inset-0 top-16 sm:top-20 z-[var(--z-modal)] transition-all duration-300 ease-in-out ${
+          mobileMenuOpen ? "visible pointer-events-auto" : "invisible pointer-events-none delay-300"
+        }`}
+        aria-hidden={!mobileMenuOpen}
+      >
+        {/* Backdrop Scrim with Smooth Fade */}
+        <div
+          className={`fixed inset-0 top-16 sm:top-20 bg-black/45 backdrop-blur-[2px] transition-opacity duration-300 ease-out ${
+            mobileMenuOpen ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={closeMobileMenu}
+          aria-hidden="true"
+        />
 
-          {/* Drawer Content */}
-          <div
-            className="fixed inset-x-0 top-16 sm:top-20 z-[var(--z-modal)] bg-paper border-b border-rule shadow-2xl p-5 sm:p-6 flex flex-col justify-between max-h-[calc(100dvh-4rem)] sm:max-h-[calc(100dvh-5rem)] overflow-y-auto"
-            role="dialog"
-            aria-modal="true"
-          >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-rule-subtle">
-                <div className="relative h-10 w-28">
-                  <Image
-                    src="/images/logo.png"
-                    alt="Sultan's Kacchi Paris"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-                <span className="text-xs text-muted flex items-center gap-1">
-                  <CheckCircle className="h-3.5 w-3.5 text-success" aria-hidden="true" />
-                  <span>{t("nav.halalBadge")}</span>
-                </span>
+        {/* Drawer Content with Smooth Slide & Subtle Scale */}
+        <div
+          className={`fixed inset-x-0 top-16 sm:top-20 bg-paper border-b border-rule shadow-2xl p-5 sm:p-6 flex flex-col justify-between max-h-[calc(100dvh-4rem)] sm:max-h-[calc(100dvh-5rem)] overflow-y-auto transform transition-all duration-300 ease-out ${
+            mobileMenuOpen
+              ? "translate-y-0 opacity-100 scale-100"
+              : "-translate-y-4 opacity-0 scale-[0.98]"
+          }`}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-rule-subtle">
+              <div className="relative h-10 w-28">
+                <Image
+                  src="/images/logo.png"
+                  alt="Sultan's Kacchi Paris"
+                  fill
+                  className="object-contain"
+                />
               </div>
-
-              {/* Language Switcher in Mobile Drawer */}
-              <div className="pb-2">
-                <span className="text-[11px] font-semibold text-muted uppercase tracking-wider block mb-1.5">
-                  Language / Langue
-                </span>
-                <LanguageSwitcher variant="detailed" />
-              </div>
-
-              <nav className="flex flex-col space-y-1.5 text-base font-medium text-ink-2">
-                <a
-                  href="/#menu"
-                  onClick={(e) => handleNavClick(e, "/#menu")}
-                  className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm font-semibold"
-                >
-                  <span>{t("nav.menuCatalog")}</span>
-                  <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                </a>
-
-                <a
-                  href="/#reservation"
-                  onClick={(e) => handleNavClick(e, "/#reservation")}
-                  className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm font-semibold"
-                >
-                  <span className="flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4 text-gold" aria-hidden="true" />
-                    <span>{t("nav.reservation")}</span>
-                  </span>
-                  <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                </a>
-
-                {settings.showLocation && (
-                  <a
-                    href="/#location"
-                    onClick={(e) => handleNavClick(e, "/#location")}
-                    className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
-                  >
-                    <span>{t("nav.location")}</span>
-                    <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                  </a>
-                )}
-
-                <Link
-                  href="/track"
-                  onClick={closeMobileMenu}
-                  className="px-3 py-2.5 rounded-[var(--radius-card)] bg-paper-3 text-accent font-semibold flex items-center justify-between text-sm mt-2 border border-rule-subtle"
-                >
-                  <span className="flex items-center gap-2">
-                    <Search className="h-4 w-4" aria-hidden="true" />
-                    <span>{t("nav.trackMobile")}</span>
-                  </span>
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </nav>
+              <span className="text-xs text-muted flex items-center gap-1">
+                <CheckCircle className="h-3.5 w-3.5 text-success" aria-hidden="true" />
+                <span>{t("nav.halalBadge")}</span>
+              </span>
             </div>
 
-            <div className="pt-6 border-t border-rule-subtle space-y-3 mt-4">
-              <Link
-                href="/admin"
-                onClick={closeMobileMenu}
-                className="btn-secondary w-full text-center text-xs py-2.5"
+            {/* Language Switcher in Mobile Drawer */}
+            <div className="pb-2">
+              <span className="text-[11px] font-semibold text-muted uppercase tracking-wider block mb-1.5">
+                Language / Langue
+              </span>
+              <LanguageSwitcher variant="detailed" />
+            </div>
+
+            <nav className="flex flex-col space-y-1.5 text-base font-medium text-ink-2">
+              <a
+                href="/#menu"
+                onClick={(e) => handleNavClick(e, "/#menu")}
+                className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors duration-short flex items-center justify-between text-sm font-semibold active:scale-[0.99]"
               >
-                {t("nav.kitchenAdminPortal")}
+                <span>{t("nav.menuCatalog")}</span>
+                <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
+              </a>
+
+              <a
+                href="/#reservation"
+                onClick={(e) => handleNavClick(e, "/#reservation")}
+                className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors duration-short flex items-center justify-between text-sm font-semibold active:scale-[0.99]"
+              >
+                <span className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-gold" aria-hidden="true" />
+                  <span>{t("nav.reservation")}</span>
+                </span>
+                <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
+              </a>
+
+              {settings.showLocation && (
+                <a
+                  href="/#location"
+                  onClick={(e) => handleNavClick(e, "/#location")}
+                  className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors duration-short flex items-center justify-between text-sm active:scale-[0.99]"
+                >
+                  <span>{t("nav.location")}</span>
+                  <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
+                </a>
+              )}
+
+              <Link
+                href="/track"
+                onClick={closeMobileMenu}
+                className="px-3 py-2.5 rounded-[var(--radius-card)] bg-paper-3 text-accent font-semibold flex items-center justify-between text-sm mt-2 border border-rule-subtle hover:border-gold/50 transition-all duration-short active:scale-[0.99]"
+              >
+                <span className="flex items-center gap-2">
+                  <Search className="h-4 w-4" aria-hidden="true" />
+                  <span>{t("nav.trackMobile")}</span>
+                </span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <p className="text-center text-xs text-muted">
-                {settings.address}
-              </p>
-            </div>
+            </nav>
+          </div>
+
+          <div className="pt-6 border-t border-rule-subtle space-y-3 mt-4">
+            <Link
+              href="/admin"
+              onClick={closeMobileMenu}
+              className="btn-secondary w-full text-center text-xs py-2.5"
+            >
+              {t("nav.kitchenAdminPortal")}
+            </Link>
+            <p className="text-center text-xs text-muted">
+              {settings.address}
+            </p>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

@@ -646,11 +646,11 @@ export default function AdminMenuPage() {
       {/* ======================================================== */}
       {isCategoryModalOpen && (
         <div
-          className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-[var(--color-scrim)] p-4"
+          className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-black/55 backdrop-blur-xs p-4 animate-smooth-fade"
           role="dialog"
           aria-modal="true"
         >
-          <div className="luxury-card w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="luxury-card w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto shadow-2xl animate-smooth-scale">
             <div className="flex items-center justify-between border-b border-rule pb-3">
               <div className="flex items-center gap-2">
                 <Tags className="h-5 w-5 text-accent" />
@@ -788,11 +788,11 @@ export default function AdminMenuPage() {
       {/* ======================================================== */}
       {isModalOpen && (
         <div
-          className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-[var(--color-scrim)] p-4"
+          className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-black/55 backdrop-blur-xs p-4 animate-smooth-fade"
           role="dialog"
           aria-modal="true"
         >
-          <div className="luxury-card w-full max-w-2xl p-6 max-h-[92vh] overflow-y-auto shadow-2xl">
+          <div className="luxury-card w-full max-w-2xl p-6 max-h-[92vh] overflow-y-auto shadow-2xl animate-smooth-scale">
             <div className="flex items-center justify-between border-b border-rule pb-3">
               <h2 className="font-display text-xl font-bold text-accent">
                 {editingItem ? "Edit Menu Dish" : "Add New Menu Dish"}

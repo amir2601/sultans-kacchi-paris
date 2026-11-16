@@ -28,7 +28,7 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
   return (
     <section id="weekly-special" className="border-b border-rule bg-paper-3/50 py-10 sm:py-16">
       <div className="container">
-        <div className="luxury-card overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 border-gold/50 shadow-md">
+        <div className="luxury-card overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 border-gold/50 shadow-md transition-all duration-300 hover:shadow-xl hover:border-gold group">
           <div className="grid grid-cols-1 items-center gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12">
             
             {/* Visual presentation */}
@@ -38,7 +38,7 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
                 alt={displayName}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
-                className="object-cover object-center"
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
               />
               <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold text-white shadow-sm">
                 <Crown className="h-3.5 w-3.5 text-gold" aria-hidden="true" />

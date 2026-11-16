@@ -220,7 +220,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
             return (
               <article
                 key={item.id}
-                className="luxury-card flex flex-col justify-between overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:border-gold/60 group"
+                className="luxury-card flex flex-col justify-between overflow-hidden hover:border-gold transition-colors duration-short group"
               >
                 {/* Image Aspect Box */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-paper-3">

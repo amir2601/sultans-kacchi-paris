@@ -40,7 +40,7 @@ body {
   border: var(--rule-hair) solid var(--color-rule);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+  transition: border-color var(--dur-short) var(--ease-out);
 }
 
 .luxury-card:hover {

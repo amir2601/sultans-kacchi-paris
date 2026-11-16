@@ -28,7 +28,7 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
   return (
     <section id="weekly-special" className="border-b border-rule bg-paper-3/50 py-10 sm:py-16">
       <div className="container">
-        <div className="luxury-card overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 border-gold/50 shadow-md transition-all duration-300 hover:shadow-xl hover:border-gold group">
+        <div className="luxury-card overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 border-gold/50 shadow-md transition-colors duration-short hover:border-gold group">
           <div className="grid grid-cols-1 items-center gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12">
             
             {/* Visual presentation */}

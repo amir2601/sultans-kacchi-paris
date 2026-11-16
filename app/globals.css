@@ -1,0 +1,155 @@
+/* Hallmark · shape: Sultan's Paris Hall · genre: editorial · theme: custom · job: buy · idea: "Mughal royal banquet craft translated to Paris fine takeaway dining." · vibe: "Bright Parisian salon meets royal Mughal heritage"
+ * paper: #FAF9F6 · accent: #4A0E17 · display: Playfair Display · body: Plus Jakarta Sans · hero: Editorial headline with royal kacchi dish in golden copper deg · nav: edge-aligned, brand left and pickup action right · footer: Parisian address and kitchen service hours · imagery: authentic culinary and architectural photography · signature: saffron-steamed mutton kacchi with caramelised potatoes and borhani
+ * axes: light/roman-serif/chromatic-burgundy · posture: Settled · contrast: pass · fold: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V4 · weakest: V, architectural Paris-Mughal dialogue */
+@import url("../tokens.css");
+@import url("../base.css");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-display-hero {
+    font-size: var(--text-display);
+    line-height: 1.08;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+  .text-section-head {
+    font-size: var(--text-section);
+    line-height: 1.15;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+}
+
+/* Elegant royal pattern over warm ivory using declared tokens */
+body {
+  background-color: var(--color-paper);
+  background-image: 
+    radial-gradient(circle at 100% 0%, var(--pattern-gold-1) 0%, transparent 40%),
+    radial-gradient(circle at 0% 100%, var(--pattern-burgundy) 0%, transparent 40%),
+    radial-gradient(var(--pattern-gold-2) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 32px 32px;
+  background-attachment: fixed;
+}
+
+.luxury-card {
+  background-color: var(--color-paper-card);
+  color: var(--color-ink);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-lg);
+  border-radius: var(--radius-card);
+  border: var(--rule-hair) solid var(--color-accent);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity var(--dur-short) var(--ease-out), transform var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-light);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  background-color: transparent;
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-lg);
+  border-radius: var(--radius-card);
+  border: var(--rule-hair) solid var(--color-accent);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-paper-3);
+}
+
+.btn-outline:active {
+  transform: translateY(1px);
+}
+
+.btn-outline:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  background-color: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+  border-radius: var(--radius-card);
+  border: var(--rule-hair) solid var(--color-rule);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-paper-3);
+  border-color: var(--color-gold);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}

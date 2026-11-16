@@ -1,0 +1,92 @@
+:root {
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 144px;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5625rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-display-s: clamp(2rem, 3.2vw + 0.5rem, 3.25rem);
+  --text-display: clamp(2.4rem, 4vw + 0.5rem, 3.75rem);
+  --text-section: clamp(1.75rem, 2.2vw + 0.5rem, 2.65rem);
+  --text-title: clamp(1.15rem, 0.75vw + 0.8rem, 1.45rem);
+  --text-lead: clamp(1rem, 0.3vw + 0.95rem, 1.15rem);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  /* Bright & Royal Parisian Palette (Tinted neutrals, no pure #fff) */
+  --color-paper: #FAF9F6; /* Soft warm ivory / off-white */
+  --color-paper-2: #FCFBF9; /* Tinted warm white surface */
+  --color-paper-3: #F4F0EA; /* Soft elevated warm cream */
+  --color-paper-card: #FCFBF9; /* Crisp luxury tinted card */
+
+  --color-ink: #1A1A1A; /* Crisp dark charcoal for headings & primary text */
+  --color-ink-2: #333333; /* Dark readable body text */
+  --color-muted: #6B645B; /* Elegant warm neutral text */
+
+  --color-accent: #4A0E17; /* Rich Burgundy / Deep Maroon */
+  --color-accent-ink: #FAF9F6; /* Warm cream text on burgundy */
+  --color-accent-light: #6A1A26; /* Lighter burgundy */
+  --color-accent-dark: #32080F; /* Deepest maroon */
+
+  --color-gold: #C5A059; /* Metallic Gold accent */
+  --color-gold-light: #DEB86D; /* Warm soft gold */
+  --color-gold-dark: #9E7B36; /* Burnished gold */
+  --color-focus: #C5A059; /* Metallic gold focus ring */
+
+  --color-rule: rgba(197, 160, 89, 0.35); /* Metallic gold hairline */
+  --color-rule-subtle: rgba(74, 14, 23, 0.1); /* Subtle burgundy border */
+
+  /* Pattern color tokens */
+  --pattern-gold-1: rgba(197, 160, 89, 0.05);
+  --pattern-burgundy: rgba(74, 14, 23, 0.04);
+  --pattern-gold-2: rgba(197, 160, 89, 0.08);
+
+  --color-scrim: rgba(11, 15, 25, 0.45);
+  --color-header-bg: rgba(250, 249, 246, 0.94);
+
+  --color-error: #B91C1C;
+  --color-success: #15803D;
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-outlier: var(--font-body);
+
+  --radius-card: 8px;
+  --radius-pill: 999px;
+  --rule-hair: 1px;
+  --shadow-card: 0 10px 30px -10px rgba(74, 14, 23, 0.08);
+  --tracking-display: -0.015em;
+
+  --container: 1320px;
+  --gutter: 48px;
+  --gap-columns: 28px;
+  --section-gap-s: 72px;
+  --section-gap: 96px;
+  --section-gap-l: 128px;
+
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-sticky-nav: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}

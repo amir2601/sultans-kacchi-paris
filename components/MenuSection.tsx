@@ -312,16 +312,16 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
             : "translate-y-12 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="luxury-card border-gold bg-accent text-white p-3.5 sm:p-4 shadow-2xl flex items-center justify-between rounded-[var(--radius-card)]">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold text-accent-dark font-bold shadow-xs">
-              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+        <div className="rounded-2xl bg-accent text-white p-3.5 sm:p-4 shadow-[0_12px_32px_rgba(74,14,23,0.35)] border border-gold/40 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gold text-accent-dark font-bold shadow-md">
+              <ShoppingBag className="h-5 w-5" aria-hidden="true" />
             </div>
-            <div>
-              <span className="text-xs font-bold block text-gold-light leading-none">
+            <div className="flex flex-col justify-center min-w-0">
+              <span className="text-xs font-semibold text-gold-light truncate leading-tight">
                 {totalItems} {totalItems === 1 ? t("menu.floatingSpecialtySingular") : t("menu.floatingSpecialtyPlural")} {t("menu.floatingInBag")}
               </span>
-              <span className="font-display text-base font-bold text-white">
+              <span className="font-display text-lg font-bold text-white leading-tight mt-0.5">
                 €{totalAmount.toFixed(2)}
               </span>
             </div>
@@ -330,10 +330,10 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
           <button
             type="button"
             onClick={openCart}
-            className="bg-white text-accent hover:bg-gold-light hover:text-accent-dark font-bold text-xs px-4 py-2 rounded-[var(--radius-card)] flex items-center gap-1.5 shadow-md active:scale-95 transition-all duration-150 min-h-[38px]"
+            className="bg-white text-accent hover:bg-gold-light hover:text-accent-dark font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-md active:scale-95 transition-all duration-150 flex-shrink-0 min-h-[40px]"
           >
             <span>{t("menu.viewBag")}</span>
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </aside>

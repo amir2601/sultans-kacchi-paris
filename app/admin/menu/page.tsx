@@ -17,16 +17,68 @@ import {
   ArrowLeft,
   Sparkles,
   Search,
+  Tags,
+  Image as ImageIcon,
+  FolderPlus,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
+
+const DEFAULT_CATEGORIES = [
+  "Mutton Kacchi",
+  "Polau",
+  "Tehari",
+  "Weekly Special",
+  "Party Special",
+  "Evening Special",
+  "Rooti",
+  "Additional",
+  "Desserts",
+  "Beverage",
+];
+
+// Curated library of all authentic local dishes available in public/images
+const AVAILABLE_LOCAL_IMAGES = [
+  { label: "Mutton Kacchi / Biryani", path: "/images/biryani-mouton.jpg", group: "Biryani & Kacchi" },
+  { label: "Chicken Biryani", path: "/images/biryani-poulet.jpg", group: "Biryani & Kacchi" },
+  { label: "Butter Chicken Biryani", path: "/images/biryani-butter-chicken.jpg", group: "Biryani & Kacchi" },
+  { label: "Paneer Biryani", path: "/images/biryani-panir.jpg", group: "Biryani & Kacchi" },
+  { label: "Chicken Roast Polau", path: "/images/roast-polau.jpg", group: "Polau & Tehari" },
+  { label: "Old Dhaka Beef Tehari", path: "/images/beef-tehari.jpg", group: "Polau & Tehari" },
+  { label: "Shahi Beef Rezala", path: "/images/beef-rezala-v2.jpg", group: "Curry & Meat" },
+  { label: "Shahi Chicken Roast", path: "/images/chicken-roast.jpg", group: "Chicken Specials" },
+  { label: "Chicken Korma", path: "/images/chicken-korma.jpg", group: "Chicken Specials" },
+  { label: "Beef Curry / Kala Bhuna", path: "/images/boeuf-au-curry.jpg", group: "Curry & Meat" },
+  { label: "Mutton Curry / Rogan Josh", path: "/images/angeau-au-curry.jpg", group: "Curry & Meat" },
+  { label: "Butter Chicken", path: "/images/butter-chicken-v2.jpg", group: "Chicken Specials" },
+  { label: "Madras Curry", path: "/images/mandras.jpg", group: "Curry & Meat" },
+  { label: "Whole Tandoori Chicken", path: "/images/poulet-tandoori.jpg", group: "Tandoori & Grill" },
+  { label: "Chicken Tikka", path: "/images/poulet-tikka.jpg", group: "Tandoori & Grill" },
+  { label: "Chicken Tikka Masala", path: "/images/poulet-tikka-masala.jpg", group: "Chicken Specials" },
+  { label: "Palak Paneer", path: "/images/palak-panir.jpg", group: "Vegetarian" },
+  { label: "Mixed Vegetable Curry", path: "/images/curry-au-légume.jpg", group: "Vegetarian" },
+  { label: "Vegetable Korma", path: "/images/legume-korma.jpg", group: "Vegetarian" },
+  { label: "Cheese Naan", path: "/images/naan-fromage.jpg", group: "Breads" },
+  { label: "Garlic Cheese Naan", path: "/images/naan-ail-fromage.jpg", group: "Breads" },
+  { label: "Royal Zafrani Firni", path: "/images/firni.jpg", group: "Desserts" },
+  { label: "Shahi Shondesh Jorda", path: "/images/jorda.jpg", group: "Desserts" },
+  { label: "Mango Lassi", path: "/images/lassi-mangue.jpg", group: "Beverages" },
+  { label: "Traditional Borhani / Lassi", path: "/images/lassi-nature.jpg", group: "Beverages" },
+  { label: "Rose Water Lassi", path: "/images/lassi-rose.jpg", group: "Beverages" },
+  { label: "Taj Mahal Palace Heritage", path: "/images/2026-11-03-taj-mahal7409450.jpg", group: "Heritage" },
+];
 
 export default function AdminMenuPage() {
   const { isAdminLoggedIn, isLoading: authLoading } = useAuth();
   const [items, setItems] = useState<MenuItem[]>([]);
+  const [categories, setCategories] = useState<string[]>(DEFAULT_CATEGORIES);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilterCategory, setSelectedFilterCategory] = useState("All");
 
+  // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
 
   // Form states
@@ -40,46 +92,35 @@ export default function AdminMenuPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+  // Image picker states
+  const [imageGallerySearch, setImageGallerySearch] = useState("");
+  const [imageTab, setImageTab] = useState<"gallery" | "custom">("gallery");
+
+  // Category manager states
+  const [newCatInput, setNewCatInput] = useState("");
+  const [catFeedback, setCatFeedback] = useState<{ type: "error" | "success"; text: string } | null>(null);
+
+  // Inline category add inside dish modal
+  const [showInlineCatAdd, setShowInlineCatAdd] = useState(false);
+  const [inlineCatInput, setInlineCatInput] = useState("");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const categories = [
-    "Mutton Kacchi",
-    "Polau",
-    "Tehari",
-    "Weekly Special",
-    "Party Special",
-    "Evening Special",
-    "Rooti",
-    "Additional",
-    "Desserts",
-    "Beverage",
-  ];
-
-  // Local available image assets
-  const availableLocalImages = [
-    { label: "Mutton Biryani / Kacchi", path: "/images/biryani-mouton.jpg" },
-    { label: "Roast Polau", path: "/images/roast-polau.jpg" },
-    { label: "Beef Tehari", path: "/images/beef-tehari.jpg" },
-    { label: "Beef Rezala", path: "/images/beef-rezala-v2.jpg" },
-    { label: "Chicken Roast", path: "/images/chicken-roast.jpg" },
-    { label: "Beef Curry / Kala Bhuna", path: "/images/boeuf-au-curry.jpg" },
-    { label: "Mutton Curry / Rezala", path: "/images/angeau-au-curry.jpg" },
-    { label: "Whole Grilled Chicken", path: "/images/poulet-tandoori.jpg" },
-    { label: "Tikka / Jali Kabab", path: "/images/poulet-tikka.jpg" },
-    { label: "Firni Dessert", path: "/images/firni.jpg" },
-    { label: "Jorda Dessert", path: "/images/jorda.jpg" },
-    { label: "Mango Lassi", path: "/images/lassi-mangue.jpg" },
-    { label: "Natural Borhani / Lassi", path: "/images/lassi-nature.jpg" },
-    { label: "Rose / Zafrani Sorbat", path: "/images/lassi-rose.jpg" },
-    { label: "Cheese Naan", path: "/images/naan-fromage.jpg" },
-    { label: "Garlic Cheese Naan", path: "/images/naan-ail-fromage.jpg" },
-    { label: "Vegetable Curry / Chutney", path: "/images/curry-au-légume.jpg" },
-    { label: "Taj Mahal Royal Architecture", path: "/images/2026-11-03-taj-mahal7409450.jpg" },
-  ];
 
   useEffect(() => {
     loadMenuItems();
   }, [isAdminLoggedIn]);
+
+  const loadCategories = (menuItemsList: MenuItem[]) => {
+    try {
+      const saved = localStorage.getItem("skp_custom_categories");
+      const customCats: string[] = saved ? JSON.parse(saved) : [];
+      const itemCats = menuItemsList.map((i) => i.category).filter(Boolean);
+      const merged = Array.from(new Set([...DEFAULT_CATEGORIES, ...customCats, ...itemCats]));
+      setCategories(merged);
+    } catch {
+      setCategories(DEFAULT_CATEGORIES);
+    }
+  };
 
   const loadMenuItems = async () => {
     setIsLoading(true);
@@ -106,18 +147,23 @@ export default function AdminMenuPage() {
     }
 
     setItems(loaded);
+    loadCategories(loaded);
     setIsLoading(false);
   };
 
   const handleOpenAddModal = () => {
     setEditingItem(null);
     setName("");
-    setCategory("Mutton Kacchi");
+    setCategory(categories[0] || "Mutton Kacchi");
     setDescription("");
     setPrice("");
     setImageUrl("/images/biryani-mouton.jpg");
     setIsWeeklySpecial(false);
     setIsAvailable(true);
+    setImageTab("gallery");
+    setImageGallerySearch("");
+    setShowInlineCatAdd(false);
+    setInlineCatInput("");
     setIsModalOpen(true);
   };
 
@@ -130,7 +176,78 @@ export default function AdminMenuPage() {
     setImageUrl(item.image_url || "/images/biryani-mouton.jpg");
     setIsWeeklySpecial(item.is_weekly_special);
     setIsAvailable(item.is_available);
+    setImageTab("gallery");
+    setImageGallerySearch("");
+    setShowInlineCatAdd(false);
+    setInlineCatInput("");
     setIsModalOpen(true);
+  };
+
+  // Add Category Handler
+  const handleAddCategory = (categoryName: string): boolean => {
+    const trimmed = categoryName.trim();
+    if (!trimmed) {
+      setCatFeedback({ type: "error", text: "Category name cannot be empty." });
+      return false;
+    }
+
+    if (categories.some((c) => c.toLowerCase() === trimmed.toLowerCase())) {
+      setCatFeedback({ type: "error", text: `Category "${trimmed}" already exists.` });
+      return false;
+    }
+
+    const updated = [...categories, trimmed];
+    setCategories(updated);
+
+    try {
+      const saved = localStorage.getItem("skp_custom_categories");
+      const customCats: string[] = saved ? JSON.parse(saved) : [];
+      if (!customCats.includes(trimmed)) {
+        customCats.push(trimmed);
+        localStorage.setItem("skp_custom_categories", JSON.stringify(customCats));
+      }
+      window.dispatchEvent(new Event("skp_categories_updated"));
+    } catch {}
+
+    setCatFeedback({ type: "success", text: `Category "${trimmed}" added successfully!` });
+    setTimeout(() => setCatFeedback(null), 3000);
+    return true;
+  };
+
+  const handleDeleteCategory = (catName: string) => {
+    const dishCount = items.filter((i) => i.category === catName).length;
+    if (dishCount > 0) {
+      if (
+        !confirm(
+          `"${catName}" has ${dishCount} dish(es) currently assigned to it. Are you sure you want to remove this category? (The dishes will still remain in your menu)`
+        )
+      ) {
+        return;
+      }
+    }
+
+    const updated = categories.filter((c) => c !== catName);
+    setCategories(updated);
+
+    try {
+      const saved = localStorage.getItem("skp_custom_categories");
+      const customCats: string[] = saved ? JSON.parse(saved) : [];
+      const filtered = customCats.filter((c) => c !== catName);
+      localStorage.setItem("skp_custom_categories", JSON.stringify(filtered));
+      window.dispatchEvent(new Event("skp_categories_updated"));
+    } catch {}
+
+    if (selectedFilterCategory === catName) {
+      setSelectedFilterCategory("All");
+    }
+  };
+
+  const handleInlineAddCategory = () => {
+    if (handleAddCategory(inlineCatInput)) {
+      setCategory(inlineCatInput.trim());
+      setInlineCatInput("");
+      setShowInlineCatAdd(false);
+    }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,6 +347,7 @@ export default function AdminMenuPage() {
     setItems(updatedList);
     try {
       localStorage.setItem("skp_local_menu", JSON.stringify(updatedList));
+      window.dispatchEvent(new Event("skp_local_menu_updated"));
     } catch {}
 
     setIsModalOpen(false);
@@ -250,6 +368,7 @@ export default function AdminMenuPage() {
     setItems(updatedList);
     try {
       localStorage.setItem("skp_local_menu", JSON.stringify(updatedList));
+      window.dispatchEvent(new Event("skp_local_menu_updated"));
     } catch {}
   };
 
@@ -271,6 +390,7 @@ export default function AdminMenuPage() {
 
     try {
       localStorage.setItem("skp_local_menu", JSON.stringify(updatedList));
+      window.dispatchEvent(new Event("skp_local_menu_updated"));
     } catch {}
   };
 
@@ -295,9 +415,17 @@ export default function AdminMenuPage() {
     return matchesSearch && matchesCategory;
   });
 
+  // Filter gallery images in grid view
+  const filteredGalleryImages = AVAILABLE_LOCAL_IMAGES.filter((img) => {
+    if (!imageGallerySearch.trim()) return true;
+    const q = imageGallerySearch.toLowerCase();
+    return img.label.toLowerCase().includes(q) || img.group.toLowerCase().includes(q);
+  });
+
+  const selectedImageObj = AVAILABLE_LOCAL_IMAGES.find((img) => img.path === imageUrl);
+
   return (
     <div className="container py-10 space-y-8">
-      
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-rule pb-6">
         <div>
@@ -310,22 +438,40 @@ export default function AdminMenuPage() {
               <span>Back to overview</span>
             </Link>
           </div>
-          <h1 className="mt-2 font-display text-2xl font-bold text-accent">
-            Paris Menu Management (46 Dishes)
+          <h1 className="mt-2 font-display text-2xl font-bold text-accent flex items-center gap-3">
+            <span>Paris Menu Management</span>
+            <span className="text-xs font-mono font-medium px-2.5 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">
+              {items.length} Dishes
+            </span>
           </h1>
           <p className="text-sm text-muted">
-            Add, update prices in Euros, assign local food images, and toggle daily availability.
+            Add dishes, organize categories, pick photos in visual grid view, and set prices.
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleOpenAddModal}
-          className="btn-primary"
-        >
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          <span>Add new menu dish</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setCatFeedback(null);
+              setNewCatInput("");
+              setIsCategoryModalOpen(true);
+            }}
+            className="btn-secondary text-xs"
+          >
+            <Tags className="h-4 w-4 text-accent" aria-hidden="true" />
+            <span>Manage Categories ({categories.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleOpenAddModal}
+            className="btn-primary text-xs"
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            <span>Add new menu dish</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter and Search Toolbar */}
@@ -341,7 +487,7 @@ export default function AdminMenuPage() {
           />
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1">
+        <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 scrollbar-none">
           <span className="text-xs text-muted font-medium mr-1 whitespace-nowrap">Category:</span>
           {["All", ...categories].map((cat) => (
             <button
@@ -350,7 +496,7 @@ export default function AdminMenuPage() {
               onClick={() => setSelectedFilterCategory(cat)}
               className={`rounded px-2.5 py-1 text-xs whitespace-nowrap font-medium transition-colors ${
                 selectedFilterCategory === cat
-                  ? "bg-accent text-white"
+                  ? "bg-accent text-white shadow-xs"
                   : "bg-paper-2 text-ink-2 hover:bg-paper-3 border border-rule-subtle"
               }`}
             >
@@ -395,7 +541,11 @@ export default function AdminMenuPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 text-xs font-medium">{item.category}</td>
+                  <td className="p-4 text-xs font-medium">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full bg-paper-3 border border-rule-subtle text-ink-2 font-medium">
+                      {item.category}
+                    </span>
+                  </td>
                   <td className="p-4 font-display font-bold text-accent text-base">
                     €{Number(item.price).toFixed(2)}
                   </td>
@@ -459,8 +609,10 @@ export default function AdminMenuPage() {
         </div>
       </div>
 
-      {/* Add / Edit Modal */}
-      {isModalOpen && (
+      {/* ======================================================== */}
+      {/* 1. Category Management Modal */}
+      {/* ======================================================== */}
+      {isCategoryModalOpen && (
         <div
           className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-[var(--color-scrim)] p-4"
           role="dialog"
@@ -468,13 +620,155 @@ export default function AdminMenuPage() {
         >
           <div className="luxury-card w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="flex items-center justify-between border-b border-rule pb-3">
+              <div className="flex items-center gap-2">
+                <Tags className="h-5 w-5 text-accent" />
+                <h2 className="font-display text-xl font-bold text-accent">
+                  Manage Menu Categories
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsCategoryModalOpen(false)}
+                className="text-muted hover:text-ink p-1 rounded"
+              >
+                <X className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+
+            <p className="text-xs text-muted mt-2">
+              Create new categories to organize your Paris menu. Added categories appear in customer filters and dish creation.
+            </p>
+
+            {/* Add Category Form */}
+            <div className="mt-4 p-4 rounded-xl bg-paper-2 border border-rule">
+              <label className="block text-xs font-semibold text-ink-2 mb-1.5">
+                Add New Category
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newCatInput}
+                  onChange={(e) => setNewCatInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      if (handleAddCategory(newCatInput)) setNewCatInput("");
+                    }
+                  }}
+                  placeholder="e.g. Set Menu, Chef Specials, Starters…"
+                  className="flex-1 rounded-[var(--radius-card)] border border-rule bg-paper py-2 px-3 text-xs text-ink focus:border-accent"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (handleAddCategory(newCatInput)) setNewCatInput("");
+                  }}
+                  className="btn-primary text-xs py-2 px-4 whitespace-nowrap"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Add Category</span>
+                </button>
+              </div>
+
+              {catFeedback && (
+                <div
+                  className={`mt-2.5 p-2 rounded-lg text-xs flex items-center gap-2 ${
+                    catFeedback.type === "error"
+                      ? "bg-rose-500/10 text-rose-600 border border-rose-500/20"
+                      : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
+                  }`}
+                >
+                  {catFeedback.type === "error" ? (
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                  ) : (
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                  )}
+                  <span>{catFeedback.text}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Existing Categories List */}
+            <div className="mt-5">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-muted">
+                  Active Categories ({categories.length})
+                </h3>
+                <span className="text-[11px] text-muted">Click trash to remove custom tag</span>
+              </div>
+
+              <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                {categories.map((cat) => {
+                  const dishCount = items.filter((i) => i.category === cat).length;
+                  const isDefault = DEFAULT_CATEGORIES.includes(cat);
+
+                  return (
+                    <div
+                      key={cat}
+                      className="flex items-center justify-between p-2.5 rounded-lg border border-rule bg-paper hover:bg-paper-2 transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="h-2 w-2 rounded-full bg-accent" />
+                        <div>
+                          <span className="text-xs font-semibold text-ink">{cat}</span>
+                          {isDefault && (
+                            <span className="ml-2 text-[10px] text-muted bg-paper-3 px-1.5 py-0.2 rounded">
+                              System
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted font-medium">
+                          {dishCount} {dishCount === 1 ? "dish" : "dishes"}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCategory(cat)}
+                          title="Delete category"
+                          className="p-1 rounded text-muted hover:text-rose-500 hover:bg-paper-3 transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-3 border-t border-rule flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsCategoryModalOpen(false)}
+                className="btn-secondary text-xs"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 2. Add / Edit Dish Modal */}
+      {/* ======================================================== */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-[var(--z-modal)] flex items-center justify-center bg-[var(--color-scrim)] p-4"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="luxury-card w-full max-w-2xl p-6 max-h-[92vh] overflow-y-auto shadow-2xl">
+            <div className="flex items-center justify-between border-b border-rule pb-3">
               <h2 className="font-display text-xl font-bold text-accent">
                 {editingItem ? "Edit Menu Dish" : "Add New Menu Dish"}
               </h2>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="text-muted hover:text-ink"
+                className="text-muted hover:text-ink p-1 rounded"
               >
                 <X className="h-5 w-5" aria-hidden="true" />
               </button>
@@ -487,9 +781,10 @@ export default function AdminMenuPage() {
             )}
 
             <form onSubmit={handleSaveItem} className="mt-4 space-y-4 text-sm">
+              {/* Dish Name */}
               <div>
                 <label className="block text-xs font-semibold text-ink-2 mb-1">
-                  Dish name
+                  Dish name *
                 </label>
                 <input
                   type="text"
@@ -497,15 +792,46 @@ export default function AdminMenuPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Royal Mutton Kacchi"
-                  className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 px-3 text-ink focus:border-accent"
+                  className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 px-3 text-ink focus:border-accent text-xs"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              {/* Category & Price */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-ink-2 mb-1">
-                    Category
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-semibold text-ink-2">
+                      Category *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowInlineCatAdd(!showInlineCatAdd)}
+                      className="text-[11px] font-semibold text-accent hover:underline flex items-center gap-1"
+                    >
+                      <Plus className="h-3 w-3" />
+                      <span>{showInlineCatAdd ? "Cancel" : "Add New Category"}</span>
+                    </button>
+                  </div>
+
+                  {showInlineCatAdd ? (
+                    <div className="flex gap-1.5 mb-2">
+                      <input
+                        type="text"
+                        value={inlineCatInput}
+                        onChange={(e) => setInlineCatInput(e.target.value)}
+                        placeholder="New category name…"
+                        className="flex-1 rounded border border-accent bg-paper py-1 px-2 text-xs text-ink focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleInlineAddCategory}
+                        className="btn-primary text-xs py-1 px-2.5"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  ) : null}
+
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -521,7 +847,7 @@ export default function AdminMenuPage() {
 
                 <div>
                   <label className="block text-xs font-semibold text-ink-2 mb-1">
-                    Price in Euros (€)
+                    Price in Euros (€) *
                   </label>
                   <input
                     type="number"
@@ -535,6 +861,7 @@ export default function AdminMenuPage() {
                 </div>
               </div>
 
+              {/* Description */}
               <div>
                 <label className="block text-xs font-semibold text-ink-2 mb-1">
                   Culinary description & ingredients
@@ -548,58 +875,185 @@ export default function AdminMenuPage() {
                 />
               </div>
 
-              {/* Local Food Image Picker */}
-              <div>
-                <label className="block text-xs font-semibold text-ink-2 mb-1">
-                  Select Local Food Image (from public/images)
-                </label>
-                <select
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 px-3 text-ink focus:border-accent text-xs mb-2"
-                >
-                  {availableLocalImages.map((img) => (
-                    <option key={img.path} value={img.path}>
-                      {img.label} ({img.path})
-                    </option>
-                  ))}
-                </select>
+              {/* ======================================================== */}
+              {/* IMAGE SELECTION - VISUAL GRID VIEW */}
+              {/* ======================================================== */}
+              <div className="p-3.5 rounded-xl border border-rule bg-paper-2/60">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2.5">
+                  <div>
+                    <label className="block text-xs font-bold text-ink">
+                      Select Dish Photo (Visual Grid View)
+                    </label>
+                    <span className="text-[11px] text-muted">
+                      Click any photo to select it for this dish
+                    </span>
+                  </div>
 
-                <div className="flex items-center gap-3">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploading}
-                    className="btn-secondary text-xs"
-                  >
-                    <Upload className="h-3.5 w-3.5" aria-hidden="true" />
-                    <span>{isUploading ? "Uploading…" : "Upload custom photo"}</span>
-                  </button>
-                  <span className="text-xs text-muted">or URL:</span>
+                  {/* Mode switcher tabs */}
+                  <div className="flex items-center gap-1 p-0.5 rounded-lg bg-paper border border-rule-subtle text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setImageTab("gallery")}
+                      className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                        imageTab === "gallery"
+                          ? "bg-accent text-white shadow-xs"
+                          : "text-muted hover:text-ink"
+                      }`}
+                    >
+                      Gallery Grid
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageTab("custom")}
+                      className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                        imageTab === "custom"
+                          ? "bg-accent text-white shadow-xs"
+                          : "text-muted hover:text-ink"
+                      }`}
+                    >
+                      Upload / URL
+                    </button>
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="/images/biryani-mouton.jpg"
-                  className="mt-2 w-full rounded-[var(--radius-card)] border border-rule bg-paper py-1.5 px-3 text-xs text-ink focus:border-accent font-mono"
-                />
 
-                {imageUrl && (
-                  <div className="relative mt-2 h-24 w-36 overflow-hidden rounded-[var(--radius-card)] border border-rule">
-                    <Image
-                      src={imageUrl}
-                      alt="Preview"
-                      fill
-                      className="object-cover"
+                {imageTab === "gallery" ? (
+                  <div>
+                    {/* Gallery Search Filter */}
+                    <div className="relative mb-2.5">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted pointer-events-none" />
+                      <input
+                        type="text"
+                        value={imageGallerySearch}
+                        onChange={(e) => setImageGallerySearch(e.target.value)}
+                        placeholder="Search photos (e.g. biryani, roast, naan, dessert, lassi)..."
+                        className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-1.5 pl-8 pr-3 text-xs text-ink placeholder:text-muted/60 focus:border-accent"
+                      />
+                    </div>
+
+                    {/* PHOTO GRID VIEW */}
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 max-h-60 overflow-y-auto p-2 rounded-xl border border-rule bg-paper scrollbar-thin">
+                      {filteredGalleryImages.map((img) => {
+                        const isSelected = imageUrl === img.path;
+
+                        return (
+                          <button
+                            type="button"
+                            key={img.path}
+                            onClick={() => setImageUrl(img.path)}
+                            className={`group relative flex flex-col rounded-lg overflow-hidden border text-left transition-all duration-150 ${
+                              isSelected
+                                ? "border-accent ring-2 ring-accent ring-offset-1 shadow-md bg-paper-2"
+                                : "border-rule hover:border-accent/60 bg-paper hover:shadow-xs"
+                            }`}
+                          >
+                            {/* Thumbnail Box */}
+                            <div className="relative aspect-square w-full bg-paper-3 overflow-hidden">
+                              <Image
+                                src={img.path}
+                                alt={img.label}
+                                fill
+                                className={`object-cover transition-transform duration-200 ${
+                                  isSelected ? "scale-105" : "group-hover:scale-105"
+                                }`}
+                                sizes="(max-width: 640px) 33vw, 20vw"
+                              />
+
+                              {/* Selected Checkmark Badge */}
+                              {isSelected && (
+                                <div className="absolute top-1.5 right-1.5 h-5 w-5 rounded-full bg-accent text-white flex items-center justify-center shadow-md">
+                                  <Check className="h-3 w-3 stroke-[3]" />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Caption Label */}
+                            <div className="p-1.5">
+                              <p
+                                className={`text-[10px] leading-tight line-clamp-1 ${
+                                  isSelected ? "text-accent font-bold" : "text-ink-2 font-medium"
+                                }`}
+                                title={img.label}
+                              >
+                                {img.label}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Selected Image Status Strip */}
+                    {imageUrl && (
+                      <div className="mt-2.5 flex items-center justify-between p-2 rounded-lg bg-paper border border-rule text-xs">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="relative h-9 w-9 rounded-md overflow-hidden flex-shrink-0 border border-gold/40 shadow-xs">
+                            <Image
+                              src={imageUrl}
+                              alt="Selected photo"
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <span className="text-[10px] uppercase font-bold text-accent tracking-wider block">
+                              Active Photo
+                            </span>
+                            <p className="font-semibold text-ink truncate text-xs">
+                              {selectedImageObj?.label || imageUrl}
+                            </p>
+                          </div>
+                        </div>
+
+                        <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full shrink-0">
+                          <Check className="h-3 w-3" /> Selected
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Custom Upload / URL mode */
+                  <div className="space-y-3 pt-1">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="btn-secondary text-xs"
+                      >
+                        <Upload className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span>{isUploading ? "Uploading…" : "Upload from device"}</span>
+                      </button>
+                      <span className="text-xs text-muted">or paste direct image URL below:</span>
+                    </div>
+
+                    <input
+                      type="text"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      placeholder="/images/biryani-mouton.jpg or https://..."
+                      className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-1.5 px-3 text-xs text-ink focus:border-accent font-mono"
                     />
+
+                    {imageUrl && (
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-16 w-24 overflow-hidden rounded-[var(--radius-card)] border border-rule">
+                          <Image
+                            src={imageUrl}
+                            alt="Preview"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="text-xs text-muted">Custom image preview</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -643,7 +1097,6 @@ export default function AdminMenuPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

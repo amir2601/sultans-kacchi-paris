@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { MenuItem } from "@/lib/supabase/types";
 import { useCart } from "@/lib/context/cart-context";
@@ -11,26 +11,60 @@ interface MenuSectionProps {
   initialItems: MenuItem[];
 }
 
+const DEFAULT_CATEGORIES = [
+  "All",
+  "Mutton Kacchi",
+  "Polau",
+  "Tehari",
+  "Weekly Special",
+  "Party Special",
+  "Evening Special",
+  "Rooti",
+  "Additional",
+  "Desserts",
+  "Beverage",
+];
+
 export default function MenuSection({ initialItems }: MenuSectionProps) {
   const { addItem, updateQuantity, items: cartItems, openCart, totalItems, totalAmount } = useCart();
   const { t, language } = useLanguage();
+  const [items, setItems] = useState<MenuItem[]>(initialItems);
+  const [categories, setCategories] = useState<string[]>(() => {
+    const fromItems = initialItems.map((i) => i.category).filter(Boolean);
+    return Array.from(new Set([...DEFAULT_CATEGORIES, ...fromItems]));
+  });
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const tabsContainerRef = useRef<HTMLDivElement>(null);
 
-  const categories = [
-    "All",
-    "Mutton Kacchi",
-    "Polau",
-    "Tehari",
-    "Weekly Special",
-    "Party Special",
-    "Evening Special",
-    "Rooti",
-    "Additional",
-    "Desserts",
-    "Beverage",
-  ];
+  useEffect(() => {
+    const syncData = () => {
+      let currentItems = initialItems;
+      try {
+        const localMenu = localStorage.getItem("skp_local_menu");
+        if (localMenu) {
+          currentItems = JSON.parse(localMenu);
+          setItems(currentItems);
+        }
+      } catch {}
+
+      try {
+        const custom: string[] = JSON.parse(
+          localStorage.getItem("skp_custom_categories") || "[]"
+        );
+        const fromItems = currentItems.map((i) => i.category).filter(Boolean);
+        setCategories(Array.from(new Set([...DEFAULT_CATEGORIES, ...custom, ...fromItems])));
+      } catch {}
+    };
+
+    syncData();
+    window.addEventListener("skp_categories_updated", syncData);
+    window.addEventListener("skp_local_menu_updated", syncData);
+    return () => {
+      window.removeEventListener("skp_categories_updated", syncData);
+      window.removeEventListener("skp_local_menu_updated", syncData);
+    };
+  }, [initialItems]);
 
   const handleCategorySelect = (cat: string, e: React.MouseEvent<HTMLButtonElement>) => {
     setSelectedCategory(cat);
@@ -42,7 +76,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
     });
   };
 
-  const filteredItems = initialItems.filter((item) => {
+  const filteredItems = items.filter((item) => {
     const matchesCategory =
       selectedCategory === "All" || item.category === selectedCategory;
     const q = searchQuery.toLowerCase().trim();
@@ -62,8 +96,8 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
   };
 
   const getCategoryCount = (cat: string) => {
-    if (cat === "All") return initialItems.length;
-    return initialItems.filter((i) => i.category === cat).length;
+    if (cat === "All") return items.length;
+    return items.filter((i) => i.category === cat).length;
   };
 
   return (
@@ -128,7 +162,8 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;
               const count = getCategoryCount(cat);
-              const label = t(`cat.${cat}`);
+              const rawLabel = t(`cat.${cat}`);
+              const label = rawLabel.startsWith("cat.") ? cat : rawLabel;
               return (
                 <button
                   key={cat}

@@ -161,12 +161,12 @@ export default function Navbar() {
               type="button"
               onClick={openCart}
               aria-label={`${t("nav.takeawayBag")}, ${totalItems} items`}
-              className="btn-primary px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm min-h-[38px]"
+              className="relative flex items-center justify-center h-[38px] w-[38px] sm:h-[38px] sm:w-auto sm:px-4 rounded-[var(--radius-card)] bg-accent text-white hover:bg-accent-light border border-accent transition-all duration-200 active:scale-95 focus-visible:outline-2 focus-visible:outline-focus flex-shrink-0"
             >
-              <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">{t("nav.takeawayBag")}</span>
+              <ShoppingBag className="h-5 w-5 sm:h-4 sm:w-4" aria-hidden="true" />
+              <span className="hidden sm:inline sm:ml-2 text-xs sm:text-sm font-semibold">{t("nav.takeawayBag")}</span>
               {totalItems > 0 && (
-                <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-xs font-bold text-accent-dark">
+                <span className="absolute -top-1.5 -right-1.5 sm:static sm:top-auto sm:right-auto sm:ml-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[10px] sm:text-xs font-bold text-accent-dark shadow-xs border-2 border-white sm:border-0">
                   {totalItems}
                 </span>
               )}
@@ -178,7 +178,7 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
-              className="lg:hidden p-2 rounded-[var(--radius-card)] border border-rule bg-paper-2 text-ink hover:text-accent focus-visible:outline-2 focus-visible:outline-focus min-w-[38px] min-h-[38px] flex items-center justify-center transition-all duration-200 active:scale-95"
+              className="lg:hidden h-[38px] w-[38px] rounded-[var(--radius-card)] border border-rule bg-paper-2 text-ink hover:text-accent focus-visible:outline-2 focus-visible:outline-focus flex items-center justify-center transition-all duration-200 active:scale-95 flex-shrink-0"
             >
               <span className={`inline-flex items-center justify-center transition-transform duration-200 ${mobileMenuOpen ? "rotate-90" : "rotate-0"}`}>
                 {mobileMenuOpen ? (

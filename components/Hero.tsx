@@ -10,11 +10,11 @@ export default function Hero() {
   const { settings } = useSettings();
 
   return (
-    <section className="relative overflow-hidden border-b border-rule bg-paper py-12 lg:py-16">
+    <section className="relative overflow-hidden border-b border-rule bg-paper py-10 sm:py-14 lg:py-16">
       <div className="container">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-14">
+        <div className="grid grid-cols-1 items-center gap-8 sm:gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-14">
           
-          {/* Hero Text Block - Fits 1280x800 without scrolling */}
+          {/* Hero Text Block */}
           <div className="flex flex-col items-start">
             
             {/* Halal badge */}
@@ -25,20 +25,20 @@ export default function Hero() {
               </div>
             )}
 
-            <h1 className="font-display text-display-hero font-bold text-accent">
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-display-hero font-bold text-accent leading-tight sm:leading-none">
               Royal Mughal Kacchi Banquet in Paris
             </h1>
 
-            <p className="mt-4 text-lead text-ink-2 max-w-[54ch] font-normal leading-relaxed">
+            <p className="mt-4 text-lead text-ink-2 max-w-[54ch] font-normal leading-relaxed text-sm sm:text-base">
               Authentic slow-dum biryani infused with pure saffron, ghee, and twenty-one royal spices.
             </p>
 
             {/* Actions */}
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={openCart}
-                className="btn-primary"
+                className="btn-primary w-full sm:w-auto justify-center"
               >
                 <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                 <span className="whitespace-nowrap">Order for pickup</span>
@@ -46,7 +46,7 @@ export default function Hero() {
               
               <a
                 href="#menu"
-                className="btn-outline"
+                className="btn-outline w-full sm:w-auto justify-center"
               >
                 <span className="whitespace-nowrap">Explore Paris menu</span>
                 <ArrowDown className="h-4 w-4" aria-hidden="true" />
@@ -54,7 +54,7 @@ export default function Hero() {
             </div>
 
             {/* Factual Paris Branch Note */}
-            <div className="mt-8 border-t border-rule pt-4 text-xs text-muted flex flex-wrap items-center gap-3">
+            <div className="mt-6 sm:mt-8 border-t border-rule pt-4 text-xs text-muted flex flex-wrap items-center gap-2 sm:gap-3">
               <span className="font-semibold text-ink">Service continuously:</span>
               <span>{settings.openingHoursWeekdays} at {settings.address.split(",")[0]}.</span>
             </div>
@@ -62,7 +62,6 @@ export default function Hero() {
 
           {/* Hero Visual Block */}
           <div
-            data-slot="hero"
             className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-gold/50 bg-paper-2 shadow-lg"
           >
             <Image

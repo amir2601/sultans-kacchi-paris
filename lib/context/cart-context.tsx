@@ -5,7 +5,7 @@ import { MenuItem, CartItem } from "../supabase/types";
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (item: MenuItem) => void;
+  addItem: (item: MenuItem, openDrawer?: boolean) => void;
   removeItem: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -45,7 +45,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isHydrated]);
 
-  const addItem = (item: MenuItem) => {
+  const addItem = (item: MenuItem, openDrawer: boolean = false) => {
     setItems((prev) => {
       const existing = prev.find((i) => i.item.id === item.id);
       if (existing) {
@@ -55,7 +55,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { item, quantity: 1 }];
     });
-    setIsCartOpen(true);
+    if (openDrawer) {
+      setIsCartOpen(true);
+    }
   };
 
   const removeItem = (itemId: string) => {

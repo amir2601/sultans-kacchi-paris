@@ -8,10 +8,10 @@ export default function Footer() {
   const { settings } = useSettings();
 
   return (
-    <footer className="border-t border-rule bg-paper-2 py-16 text-sm text-ink-2 shadow-xs">
+    <footer className="border-t border-rule bg-paper-2 py-10 sm:py-16 text-sm text-ink-2 shadow-xs">
       <div className="container">
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-rule">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 pb-8 sm:pb-12 border-b border-rule">
           
           {/* Brand Col */}
           <div className="flex flex-col items-start">
@@ -19,7 +19,7 @@ export default function Footer() {
               <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-card)] border border-gold/40 bg-paper text-accent shadow-xs">
                 <Crown className="h-5 w-5 text-gold" aria-hidden="true" />
               </div>
-              <span className="font-display text-xl font-bold text-accent">
+              <span className="font-display text-lg sm:text-xl font-bold text-accent">
                 {settings.name}
               </span>
             </div>
@@ -126,7 +126,7 @@ export default function Footer() {
         </div>
 
         {/* Hallmark Compliant Photo Credits & Copyright */}
-        <div className="pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xs text-muted">
+        <div className="pt-6 sm:pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4 text-xs text-muted">
           <p>
             © {new Date().getFullYear()} Sultan’s Kacchi Paris. Tous droits réservés · Service charge are included.
           </p>

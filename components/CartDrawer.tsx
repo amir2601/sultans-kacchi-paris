@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
@@ -32,6 +32,18 @@ export default function CartDrawer() {
     total: number;
   } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Lock body scroll when cart drawer is open
+  useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isCartOpen]);
 
   if (!isCartOpen) return null;
 
@@ -120,25 +132,28 @@ export default function CartDrawer() {
 
   return (
     <div
-      className="fixed inset-0 z-[var(--z-modal)] flex justify-end bg-[var(--color-scrim)]"
+      className="fixed inset-0 z-[var(--z-modal)] flex justify-end bg-[var(--color-scrim)] backdrop-blur-xs animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="cart-drawer-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) closeCart();
+      }}
     >
-      <div className="flex h-full w-full max-w-lg flex-col justify-between border-l border-rule bg-paper p-6 md:p-8 overflow-y-auto shadow-2xl">
+      <div className="flex h-[100dvh] w-full max-w-lg flex-col justify-between border-l border-rule bg-paper p-5 sm:p-6 md:p-8 overflow-y-auto shadow-2xl animate-in slide-in-from-right duration-200">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-rule pb-4">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between border-b border-rule pb-4 flex-shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-card)] bg-paper-2 border border-gold/40 text-accent">
-              <ShoppingBag className="h-5 w-5 text-gold" aria-hidden="true" />
+              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 text-gold" aria-hidden="true" />
             </div>
             <div>
-              <h2 id="cart-drawer-title" className="font-display text-xl font-bold text-accent">
+              <h2 id="cart-drawer-title" className="font-display text-lg sm:text-xl font-bold text-accent">
                 Takeaway Bag
               </h2>
               <span className="text-xs text-muted">
-                {totalItems} specialties selected
+                {totalItems} {totalItems === 1 ? "specialty" : "specialties"} selected
               </span>
             </div>
           </div>
@@ -146,7 +161,7 @@ export default function CartDrawer() {
             type="button"
             onClick={closeCart}
             aria-label="Close takeaway bag"
-            className="rounded-[var(--radius-card)] p-2 text-muted hover:text-accent hover:bg-paper-3 focus-visible:outline-2 focus-visible:outline-focus"
+            className="rounded-[var(--radius-card)] p-2 text-muted hover:text-accent hover:bg-paper-3 focus-visible:outline-2 focus-visible:outline-focus min-w-[36px] min-h-[36px] flex items-center justify-center"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -154,18 +169,18 @@ export default function CartDrawer() {
 
         {/* Content Body */}
         {orderSuccess ? (
-          <div className="my-auto py-8 text-center flex flex-col items-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success/10 border border-success/30 text-success mb-4">
-              <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
+          <div className="my-auto py-6 sm:py-8 text-center flex flex-col items-center">
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-success/10 border border-success/30 text-success mb-3 sm:mb-4">
+              <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-accent">
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-accent">
               Order Confirmed for Pickup
             </h3>
-            <p className="mt-2 text-sm text-ink-2 max-w-[38ch]">
+            <p className="mt-2 text-xs sm:text-sm text-ink-2 max-w-[38ch]">
               Thank you, {orderSuccess.name}. Your royal takeaway is scheduled for {orderSuccess.time}.
             </p>
 
-            <div className="mt-6 w-full rounded-[var(--radius-card)] border border-rule bg-paper-2 p-5 text-left text-sm space-y-2.5 shadow-sm">
+            <div className="mt-5 sm:mt-6 w-full rounded-[var(--radius-card)] border border-rule bg-paper-2 p-4 sm:p-5 text-left text-xs sm:text-sm space-y-2.5 shadow-xs">
               <div className="flex justify-between items-center">
                 <span className="text-xs text-muted">Order reference</span>
                 <span className="font-mono text-xs font-bold text-accent bg-paper-3 px-2 py-0.5 rounded border border-rule">
@@ -176,7 +191,7 @@ export default function CartDrawer() {
                 <span className="text-muted">Payment mode</span>
                 <span className="font-medium text-ink">Pay on Pickup (Cash or Card)</span>
               </div>
-              <div className="flex justify-between font-bold border-t border-rule-subtle pt-2 text-base text-ink">
+              <div className="flex justify-between font-bold border-t border-rule-subtle pt-2 text-sm sm:text-base text-ink">
                 <span>Total to pay</span>
                 <span className="text-accent">€{orderSuccess.total.toFixed(2)}</span>
               </div>
@@ -186,11 +201,11 @@ export default function CartDrawer() {
               Collection counter: {settings.address}
             </p>
 
-            <div className="mt-6 w-full space-y-3">
+            <div className="mt-6 w-full space-y-2.5 sm:space-y-3">
               <Link
                 href={`/track?id=${orderSuccess.orderId}`}
                 onClick={closeCart}
-                className="btn-primary w-full flex items-center justify-center gap-2"
+                className="btn-primary w-full flex items-center justify-center gap-2 py-3"
               >
                 <span>Track live order preparation</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -198,7 +213,7 @@ export default function CartDrawer() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="btn-secondary w-full text-xs"
+                className="btn-secondary w-full text-xs py-2.5"
               >
                 Close and return to menu
               </button>
@@ -206,6 +221,9 @@ export default function CartDrawer() {
           </div>
         ) : items.length === 0 ? (
           <div className="my-auto py-12 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-paper-2 border border-rule text-muted mb-3">
+              <ShoppingBag className="h-6 w-6" aria-hidden="true" />
+            </div>
             <p className="font-display text-lg font-bold text-accent">Your bag is empty</p>
             <p className="mt-2 text-xs text-muted max-w-[34ch] mx-auto">
               Explore our Paris menu and add authentic Kacchi, Polau, or Party Banquets.
@@ -213,32 +231,32 @@ export default function CartDrawer() {
             <button
               type="button"
               onClick={closeCart}
-              className="mt-6 btn-outline"
+              className="mt-6 btn-outline text-xs"
             >
               Browse Paris specialties
             </button>
           </div>
         ) : (
-          <div className="flex-1 py-6 space-y-6">
+          <div className="flex-1 py-4 sm:py-6 space-y-5 sm:space-y-6 overflow-y-auto">
             
             {/* Items List */}
-            <div className="space-y-3 max-h-[36vh] overflow-y-auto pr-1">
+            <div className="space-y-2.5 sm:space-y-3 max-h-[32vh] overflow-y-auto pr-1">
               {items.map(({ item, quantity }) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-3 text-sm shadow-xs"
+                  className="flex items-center justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-2.5 sm:p-3 text-sm shadow-xs"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-ink truncate text-xs sm:text-sm">{item.name}</p>
                     <p className="text-[11px] text-muted">€{Number(item.price).toFixed(2)} each</p>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, quantity - 1)}
                       aria-label={`Reduce quantity of ${item.name}`}
-                      className="rounded-[var(--radius-card)] border border-rule p-1 hover:bg-paper-3 text-ink-2"
+                      className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
                     >
                       <Minus className="h-3 w-3" aria-hidden="true" />
                     </button>
@@ -249,7 +267,7 @@ export default function CartDrawer() {
                       type="button"
                       onClick={() => updateQuantity(item.id, quantity + 1)}
                       aria-label={`Increase quantity of ${item.name}`}
-                      className="rounded-[var(--radius-card)] border border-rule p-1 hover:bg-paper-3 text-ink-2"
+                      className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
                     >
                       <Plus className="h-3 w-3" aria-hidden="true" />
                     </button>
@@ -257,7 +275,7 @@ export default function CartDrawer() {
                       type="button"
                       onClick={() => removeItem(item.id)}
                       aria-label={`Remove ${item.name}`}
-                      className="ml-1 text-muted hover:text-error transition-colors p-1"
+                      className="ml-1 text-muted hover:text-error transition-colors p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
                     >
                       <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                     </button>
@@ -267,18 +285,18 @@ export default function CartDrawer() {
             </div>
 
             {/* Total Summary */}
-            <div className="border-t border-rule pt-4">
-              <div className="flex items-center justify-between text-base font-bold">
+            <div className="border-t border-rule pt-3 sm:pt-4">
+              <div className="flex items-center justify-between text-sm sm:text-base font-bold">
                 <span className="text-ink">Total takeaway amount</span>
-                <span className="font-display text-2xl text-accent">€{totalAmount.toFixed(2)}</span>
+                <span className="font-display text-xl sm:text-2xl text-accent">€{totalAmount.toFixed(2)}</span>
               </div>
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-[11px] sm:text-xs text-muted">
                 Pay on pickup at the counter. All prices include French TVA & service charges.
               </p>
             </div>
 
             {/* Customer Details Form */}
-            <form onSubmit={handleSubmitOrder} className="space-y-3.5 border-t border-rule pt-4">
+            <form onSubmit={handleSubmitOrder} className="space-y-3 sm:space-y-3.5 border-t border-rule pt-4">
               {errorMessage && (
                 <div className="rounded-[var(--radius-card)] border border-error bg-error/10 p-2.5 text-xs text-error font-medium">
                   {errorMessage}
@@ -298,7 +316,7 @@ export default function CartDrawer() {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="e.g. Jean Dupont"
-                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
+                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   />
                 </div>
               </div>
@@ -316,7 +334,7 @@ export default function CartDrawer() {
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     placeholder="e.g. +33 6 12 34 56 78"
-                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
+                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   />
                 </div>
               </div>
@@ -332,7 +350,7 @@ export default function CartDrawer() {
                     required
                     value={pickupTime}
                     onChange={(e) => setPickupTime(e.target.value)}
-                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-xs text-ink focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
+                    className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   >
                     <option value="">Select pickup time…</option>
                     {settings.pickupSlots.map((slot) => (
@@ -348,7 +366,7 @@ export default function CartDrawer() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="btn-primary w-full"
+                  className="btn-primary w-full py-3 text-xs sm:text-sm font-bold min-h-[44px]"
                 >
                   {isSubmitting ? "Submitting order…" : `Confirm takeaway order (€${totalAmount.toFixed(2)})`}
                 </button>
@@ -359,8 +377,8 @@ export default function CartDrawer() {
         )}
 
         {/* Footer info note */}
-        <div className="border-t border-rule pt-4 text-center">
-          <p className="text-xs text-muted">
+        <div className="border-t border-rule pt-3 sm:pt-4 text-center flex-shrink-0">
+          <p className="text-[11px] sm:text-xs text-muted">
             Pay on pickup at {settings.address.split(",")[0]}, 75010 Paris
           </p>
         </div>

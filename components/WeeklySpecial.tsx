@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { MenuItem } from "@/lib/supabase/types";
 import { useCart } from "@/lib/context/cart-context";
-import { Plus, Check, Sparkles, Crown } from "lucide-react";
+import { Plus, Check, Crown } from "lucide-react";
 import { useState } from "react";
 
 interface WeeklySpecialProps {
@@ -15,16 +15,16 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
   const [justAdded, setJustAdded] = useState(false);
 
   const handleAdd = () => {
-    addItem(specialItem);
+    addItem(specialItem, false);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
 
   return (
-    <section id="weekly-special" className="border-b border-rule bg-paper-3/50 py-16">
+    <section id="weekly-special" className="border-b border-rule bg-paper-3/50 py-10 sm:py-16">
       <div className="container">
-        <div className="luxury-card overflow-hidden p-6 md:p-10 lg:p-12 border-gold/50 shadow-md">
-          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12">
+        <div className="luxury-card overflow-hidden p-5 sm:p-8 md:p-10 lg:p-12 border-gold/50 shadow-md">
+          <div className="grid grid-cols-1 items-center gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-12">
             
             {/* Visual presentation */}
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-gold/40 shadow-sm">
@@ -51,17 +51,17 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
                 <span className="text-xs font-medium text-muted">Authentic Old Dhaka Recipe</span>
               </div>
 
-              <h2 className="mt-2 font-display text-section-head font-bold text-accent">
+              <h2 className="mt-2 font-display text-2xl sm:text-3xl lg:text-section-head font-bold text-accent">
                 {specialItem.name}
               </h2>
 
-              <p className="mt-4 text-base leading-relaxed text-ink-2 max-w-[55ch]">
+              <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-ink-2 max-w-[55ch]">
                 {specialItem.description ||
                   "Aged basmati rice sealed with tender spring lamb, caramelized potato, saffron ghee, and whole spices in a traditional sealed deg."}
               </p>
 
-              <div className="mt-6 flex items-baseline gap-2">
-                <span className="font-display text-3xl font-bold text-accent">
+              <div className="mt-5 sm:mt-6 flex flex-wrap items-baseline gap-2">
+                <span className="font-display text-2xl sm:text-3xl font-bold text-accent">
                   €{Number(specialItem.price).toFixed(2)}
                 </span>
                 <span className="text-xs text-muted font-medium">
@@ -69,17 +69,17 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
                 </span>
               </div>
 
-              <div className="mt-8 flex items-center gap-4">
+              <div className="mt-6 sm:mt-8 flex items-center gap-4 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={handleAdd}
                   disabled={!specialItem.is_available}
-                  className="btn-primary"
+                  className="btn-primary w-full sm:w-auto justify-center min-h-[44px]"
                 >
                   {justAdded ? (
                     <span className="whitespace-nowrap flex items-center gap-1.5">
                       <Check className="h-4 w-4" aria-hidden="true" />
-                      <span>Added</span>
+                      <span>Added to bag</span>
                     </span>
                   ) : (
                     <span className="whitespace-nowrap flex items-center gap-1.5">

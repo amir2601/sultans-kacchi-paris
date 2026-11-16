@@ -121,9 +121,9 @@ function TrackOrderContent() {
   };
 
   return (
-    <div className="container py-12 md:py-16 max-w-4xl">
+    <div className="container py-8 sm:py-12 md:py-16 max-w-4xl">
       {/* Top Navigation */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-accent font-medium transition-colors duration-short"
@@ -134,36 +134,36 @@ function TrackOrderContent() {
       </div>
 
       {/* Header */}
-      <div className="text-center max-w-xl mx-auto mb-10">
+      <div className="text-center max-w-xl mx-auto mb-8 sm:mb-10">
         <div className="inline-flex items-center justify-center h-12 w-12 rounded-full border border-gold/40 bg-paper-2 text-accent mb-3 shadow-sm">
           <ChefHat className="h-6 w-6" aria-hidden="true" />
         </div>
-        <h1 className="font-display text-3xl md:text-4xl font-semibold text-ink">
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-ink">
           Track Your Takeaway Order
         </h1>
-        <p className="mt-2 text-sm text-muted">
+        <p className="mt-2 text-xs sm:text-sm text-muted">
           Enter your unique order reference code below to check live kitchen preparation status.
         </p>
       </div>
 
       {/* Search Bar */}
-      <div className="luxury-card p-6 md:p-8 mb-10">
+      <div className="luxury-card p-4 sm:p-6 md:p-8 mb-8 sm:mb-10">
         <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-muted pointer-events-none" aria-hidden="true" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted pointer-events-none" aria-hidden="true" />
             <input
               type="text"
               required
               value={orderIdInput}
               onChange={(e) => setOrderIdInput(e.target.value)}
-              placeholder="Enter your Order ID (e.g. skp-l89x...)"
-              className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
+              placeholder="Enter your Order ID (e.g. SKP-7K92)"
+              className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2.5 pl-10 pr-4 text-base sm:text-sm text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
             />
           </div>
           <button
             type="submit"
             disabled={isSearching}
-            className="btn-primary"
+            className="btn-primary min-h-[44px]"
           >
             {isSearching ? "Searching…" : "Track live status"}
           </button>

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/context/auth-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { MenuItem } from "@/lib/supabase/types";
 import { INITIAL_MENU_ITEMS } from "@/lib/data/initial-menu";
+import { compressImage } from "@/lib/utils/image-compression";
 import {
   Plus,
   Edit2,
@@ -91,6 +92,11 @@ export default function AdminMenuPage() {
   const [isAvailable, setIsAvailable] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [uploadStats, setUploadStats] = useState<{
+    original: string;
+    compressed: string;
+    reduction: number;
+  } | null>(null);
 
   // Image picker states
   const [imageGallerySearch, setImageGallerySearch] = useState("");
@@ -165,6 +171,7 @@ export default function AdminMenuPage() {
     setShowInlineCatAdd(false);
     setInlineCatInput("");
     setIsModalOpen(true);
+    setUploadStats(null);
   };
 
   const handleOpenEditModal = (item: MenuItem) => {
@@ -181,6 +188,7 @@ export default function AdminMenuPage() {
     setShowInlineCatAdd(false);
     setInlineCatInput("");
     setIsModalOpen(true);
+    setUploadStats(null);
   };
 
   // Add Category Handler
@@ -255,17 +263,37 @@ export default function AdminMenuPage() {
     if (!file) return;
 
     setIsUploading(true);
-    setStatusMessage(null);
+    setStatusMessage("Compressing and optimizing photo before upload…");
+    setUploadStats(null);
 
     try {
+      // 1. Client-side automatic compression (max 1400px, 82% quality JPEG)
+      const compressedResult = await compressImage(file, {
+        maxWidth: 1400,
+        maxHeight: 1400,
+        quality: 0.82,
+        outputType: "image/jpeg",
+      });
+
+      setUploadStats({
+        original: compressedResult.formattedOriginalSize,
+        compressed: compressedResult.formattedCompressedSize,
+        reduction: compressedResult.reductionPercent,
+      });
+
+      const fileToUpload = compressedResult.file;
+
       if (isSupabaseConfigured) {
-        const fileExt = file.name.split(".").pop();
+        const fileExt = fileToUpload.name.split(".").pop() || "jpg";
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
         const filePath = `items/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("menu-images")
-          .upload(filePath, file);
+          .upload(filePath, fileToUpload, {
+            contentType: "image/jpeg",
+            upsert: true,
+          });
 
         if (uploadError) {
           throw uploadError;
@@ -279,17 +307,21 @@ export default function AdminMenuPage() {
           setImageUrl(publicUrlData.publicUrl);
         }
       } else {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImageUrl(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        // Fallback for local development or demo without remote Supabase
+        setImageUrl(compressedResult.dataUrl);
       }
+
+      setStatusMessage(
+        `✓ Photo auto-compressed: ${compressedResult.formattedOriginalSize} → ${compressedResult.formattedCompressedSize} (${compressedResult.reductionPercent}% smaller) ready.`
+      );
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Image upload failed";
+      const msg = err instanceof Error ? err.message : "Image upload and compression failed";
       setStatusMessage(`Upload notice: ${msg}`);
     } finally {
       setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -1041,6 +1073,15 @@ export default function AdminMenuPage() {
                       className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-1.5 px-3 text-xs text-ink focus:border-accent font-mono"
                     />
 
+                    {uploadStats && (
+                      <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700">
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                        <span>
+                          Auto-compressed: <strong>{uploadStats.original}</strong> → <strong>{uploadStats.compressed}</strong> ({uploadStats.reduction}% smaller) before upload.
+                        </span>
+                      </div>
+                    )}
+
                     {imageUrl && (
                       <div className="flex items-center gap-3">
                         <div className="relative h-16 w-24 overflow-hidden rounded-[var(--radius-card)] border border-rule">
@@ -1051,7 +1092,10 @@ export default function AdminMenuPage() {
                             className="object-cover"
                           />
                         </div>
-                        <span className="text-xs text-muted">Custom image preview</span>
+                        <div className="text-xs text-muted">
+                          <p className="font-semibold text-ink">Active Upload Preview</p>
+                          <p className="text-[11px]">Ready to save with menu item</p>
+                        </div>
                       </div>
                     )}
                   </div>

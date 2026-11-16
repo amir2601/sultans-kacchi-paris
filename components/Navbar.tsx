@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
@@ -58,30 +59,26 @@ export default function Navbar() {
       <div className="w-full border-b border-rule bg-paper/95 backdrop-blur-md shadow-xs">
         <div className="container flex h-16 sm:h-20 items-center justify-between">
           
-          {/* Brand Lockup inspired by Sultan's Kacchi Paris */}
+          {/* Brand Lockup featuring Sultan's Kacchi Paris Logo */}
           <Link
             href="/"
             onClick={closeMobileMenu}
-            className="group flex items-center gap-2.5 sm:gap-3 text-ink focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2"
+            className="group flex items-center gap-2 text-ink focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 py-1"
           >
-            {/* Halal / Royal Crown Seal */}
-            <div className="relative flex h-9 w-9 sm:h-11 sm:w-11 flex-shrink-0 items-center justify-center rounded-[var(--radius-card)] border border-gold/50 bg-paper-2 text-accent shadow-xs group-hover:border-gold transition-colors duration-short">
-              <Crown className="h-4 w-4 sm:h-5 sm:w-5 text-gold" aria-hidden="true" />
-              {settings.isHalalCertified && (
-                <span className="absolute -bottom-1 -right-1 flex h-3.5 w-3.5 sm:h-4 sm:w-4 items-center justify-center rounded-full bg-accent text-[8px] sm:text-[9px] font-bold text-white shadow-xs">
-                  حلال
-                </span>
-              )}
+            <div className="relative h-12 w-28 sm:h-14 sm:w-36 flex-shrink-0 transition-transform duration-short group-hover:scale-105">
+              <Image
+                src="/images/logo.png"
+                alt="Sultan's Kacchi Paris"
+                fill
+                priority
+                className="object-contain"
+              />
             </div>
-
-            <div className="flex flex-col">
-              <span className="font-display text-lg sm:text-2xl font-bold tracking-tight text-accent leading-none">
-                {t("nav.brandTitle")}
+            {settings.isHalalCertified && (
+              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-semibold text-accent">
+                حلال Halal
               </span>
-              <span className="text-[10px] sm:text-xs font-medium text-muted mt-0.5 sm:mt-1">
-                {t("nav.brandSubtitle")}
-              </span>
-            </div>
+            )}
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -188,9 +185,14 @@ export default function Navbar() {
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-rule-subtle">
-                <span className="font-display text-sm font-bold text-accent">
-                  {t("nav.brandTitle")} Navigation
-                </span>
+                <div className="relative h-10 w-28">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Sultan's Kacchi Paris"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
                 <span className="text-xs text-muted flex items-center gap-1">
                   <CheckCircle className="h-3.5 w-3.5 text-success" aria-hidden="true" />
                   <span>{t("nav.halalBadge")}</span>

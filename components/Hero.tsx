@@ -19,13 +19,24 @@ export default function Hero() {
           {/* Hero Text Block */}
           <div className="flex flex-col items-start">
             
-            {/* Halal badge */}
-            {settings.isHalalCertified && (
-              <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-paper-2 px-3.5 py-1 text-xs font-semibold text-accent shadow-xs mb-4">
-                <Crown className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-                <span>{t("hero.halalTag")}</span>
+            {/* Brand Logo & Halal badge */}
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <div className="relative h-12 w-28 sm:h-14 sm:w-32 flex-shrink-0">
+                <Image
+                  src="/images/logo.png"
+                  alt="Sultan's Kacchi Paris"
+                  fill
+                  priority
+                  className="object-contain object-left"
+                />
               </div>
-            )}
+              {settings.isHalalCertified && (
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-paper-2 px-3 py-1 text-xs font-semibold text-accent shadow-xs">
+                  <Crown className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+                  <span>{t("hero.halalTag")}</span>
+                </div>
+              )}
+            </div>
 
             <h1 className="font-display text-3xl sm:text-4xl lg:text-display-hero font-bold text-accent leading-tight sm:leading-none">
               {t("hero.headline")}

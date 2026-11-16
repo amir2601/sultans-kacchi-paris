@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSettings } from "@/lib/context/settings-context";
 import { useLanguage } from "@/lib/context/language-context";
@@ -17,15 +18,17 @@ export default function Footer() {
           
           {/* Brand Col */}
           <div className="flex flex-col items-start">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-[var(--radius-card)] border border-gold/40 bg-paper text-accent shadow-xs">
-                <Crown className="h-5 w-5 text-gold" aria-hidden="true" />
+            <Link href="/" className="inline-block mb-1">
+              <div className="relative h-14 w-36">
+                <Image
+                  src="/images/logo.png"
+                  alt="Sultan's Kacchi Paris"
+                  fill
+                  className="object-contain object-left"
+                />
               </div>
-              <span className="font-display text-lg sm:text-xl font-bold text-accent">
-                {settings.name}
-              </span>
-            </div>
-            <p className="mt-3 text-xs leading-relaxed text-muted max-w-[32ch]">
+            </Link>
+            <p className="mt-1 text-xs leading-relaxed text-muted max-w-[32ch]">
               {t("footer.tagline")}
             </p>
             {settings.isHalalCertified && (

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AuthProvider, useAuth } from "@/lib/context/auth-context";
@@ -31,12 +32,19 @@ function AdminNav() {
         <div className="flex items-center gap-6">
           <Link
             href="/admin"
-            className="flex items-center gap-2 font-display text-base sm:text-lg font-bold text-accent"
+            className="flex items-center gap-2.5"
           >
-            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-[var(--radius-card)] border border-gold/40 bg-paper text-gold shadow-xs">
-              <UtensilsCrossed className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden="true" />
+            <div className="relative h-8 w-24 sm:h-9 sm:w-28 flex-shrink-0">
+              <Image
+                src="/images/logo.png"
+                alt="Sultan's Kacchi Paris Admin"
+                fill
+                className="object-contain"
+              />
             </div>
-            <span>Sultan’s Paris Admin</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-accent/10 text-accent border border-accent/20 hidden sm:inline-block">
+              Admin
+            </span>
           </Link>
 
           {/* Navigation Links - Desktop */}

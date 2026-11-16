@@ -20,6 +20,10 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: "Sultan's Kacchi Paris | Royal Mughal Gastronomy House",
   description: "Authentic royal Kacchi Biryani and Bengali Mughal banquets at 28 Rue du Faubourg Saint-Denis, 75010 Paris. 100% Halal certified takeaway ordering.",
+  icons: {
+    icon: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({

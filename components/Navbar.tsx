@@ -23,6 +23,17 @@ export default function Navbar() {
   const { settings } = useSettings();
   const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Detect scroll to apply solid white background and enhanced shadow
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 15);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -54,9 +65,15 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-[var(--z-sticky-nav)] w-full">
-      {/* Top Navbar Bar with Backdrop Blur */}
-      <div className="w-full border-b border-rule bg-paper/95 backdrop-blur-md shadow-xs">
+    <header className="sticky top-0 z-[var(--z-sticky-nav)] w-full transition-colors duration-200">
+      {/* Top Navbar Bar with Solid White Background on Scroll */}
+      <div
+        className={`w-full transition-all duration-200 ${
+          isScrolled
+            ? "bg-white shadow-md border-b border-gold/25"
+            : "bg-white/95 backdrop-blur-md border-b border-rule shadow-xs"
+        }`}
+      >
         <div className="container flex h-16 sm:h-20 items-center justify-between">
           
           {/* Brand Lockup featuring Sultan's Kacchi Paris Logo */}
@@ -65,7 +82,7 @@ export default function Navbar() {
             onClick={closeMobileMenu}
             className="group flex items-center gap-2 text-ink focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 py-1"
           >
-            <div className="relative h-12 w-28 sm:h-14 sm:w-36 flex-shrink-0 transition-transform duration-short group-hover:scale-105">
+            <div className="relative h-12 w-28 sm:h-14 sm:w-36 flex-shrink-0 transition-transform duration-short group-hover:scale-105 drop-shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
               <Image
                 src="/images/logo.png"
                 alt="Sultan's Kacchi Paris"
@@ -83,20 +100,20 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links */}
           <nav
-            className="hidden lg:flex items-center gap-6 xl:gap-7 text-sm font-medium text-ink-2"
+            className="hidden lg:flex items-center gap-6 xl:gap-7 text-sm font-semibold text-ink-2"
             aria-label="Main Navigation"
           >
             <a
               href="/#menu"
               onClick={(e) => handleNavClick(e, "/#menu")}
-              className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
+              className="text-ink-2 hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
             >
               {t("nav.menu")}
             </a>
             <a
               href="/#reservation"
               onClick={(e) => handleNavClick(e, "/#reservation")}
-              className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus flex items-center gap-1.5"
+              className="text-ink-2 hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus flex items-center gap-1.5"
             >
               <CalendarDays className="h-4 w-4 text-gold" aria-hidden="true" />
               <span>{t("nav.reservation")}</span>
@@ -105,14 +122,14 @@ export default function Navbar() {
               <a
                 href="/#location"
                 onClick={(e) => handleNavClick(e, "/#location")}
-                className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
+                className="text-ink-2 hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
               >
                 {t("nav.location")}
               </a>
             )}
             <Link
               href="/track"
-              className="flex items-center gap-1.5 text-accent font-semibold hover:text-accent-light transition-colors duration-short focus-visible:outline-2 focus-visible:outline-focus"
+              className="flex items-center gap-1.5 text-accent font-bold hover:text-accent-light transition-colors duration-short focus-visible:outline-2 focus-visible:outline-focus"
             >
               <Search className="h-3.5 w-3.5" aria-hidden="true" />
               <span>{t("nav.track")}</span>

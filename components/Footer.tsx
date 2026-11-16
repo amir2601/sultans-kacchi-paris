@@ -48,18 +48,13 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#weekly-special" className="hover:text-accent transition-colors duration-short">
-                  {t("nav.weeklyBanner")}
+                <a href="/#reservation" className="hover:text-accent transition-colors duration-short">
+                  {t("nav.reservation")}
                 </a>
               </li>
               <li>
-                <a href="/#party-special" className="hover:text-accent transition-colors duration-short">
-                  {t("nav.partyBanquets")}
-                </a>
-              </li>
-              <li>
-                <a href="/#heritage" className="hover:text-accent transition-colors duration-short">
-                  {t("nav.heritage")}
+                <a href="/#location" className="hover:text-accent transition-colors duration-short">
+                  {t("nav.location")}
                 </a>
               </li>
               <li>

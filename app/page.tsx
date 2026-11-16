@@ -1,9 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import WeeklySpecial from "@/components/WeeklySpecial";
 import MenuSection from "@/components/MenuSection";
-import PartySpecialSection from "@/components/PartySpecialSection";
-import HeritageStory from "@/components/HeritageStory";
+import ReservationSection from "@/components/ReservationSection";
 import LocationHours from "@/components/LocationHours";
 import Footer from "@/components/Footer";
 import CartDrawer from "@/components/CartDrawer";
@@ -34,19 +32,14 @@ async function getMenuItems(): Promise<MenuItem[]> {
 
 export default async function HomePage() {
   const menuItems = await getMenuItems();
-  const weeklySpecial =
-    menuItems.find((i) => i.is_weekly_special) || menuItems[0];
-  const partyItems = menuItems.filter((i) => i.category === "Party Special");
 
   return (
     <main className="min-h-screen bg-paper text-ink flex flex-col justify-between">
       <Navbar />
       <div className="flex-1">
         <Hero />
-        {weeklySpecial && <WeeklySpecial specialItem={weeklySpecial} />}
         <MenuSection initialItems={menuItems} />
-        {partyItems.length > 0 && <PartySpecialSection partyItems={partyItems} />}
-        <HeritageStory />
+        <ReservationSection />
         <LocationHours />
       </div>
       <Footer />

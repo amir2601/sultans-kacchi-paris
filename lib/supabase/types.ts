@@ -37,3 +37,18 @@ export interface CartItem {
   item: MenuItem;
   quantity: number;
 }
+
+export type ReservationStatus = 'Confirmed' | 'Pending' | 'Cancelled';
+
+export interface Reservation {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string | null;
+  guests_count: number;
+  reservation_date: string;
+  reservation_time: string;
+  special_notes?: string | null;
+  status: ReservationStatus;
+  created_at: string;
+}

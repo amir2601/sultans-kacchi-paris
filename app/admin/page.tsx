@@ -15,6 +15,7 @@ import {
   ArrowRight,
   Settings,
   Sparkles,
+  CalendarDays,
 } from "lucide-react";
 
 export default function AdminOverviewPage() {
@@ -139,6 +140,10 @@ export default function AdminOverviewPage() {
           <Link href="/admin/settings" className="btn-secondary text-xs">
             <Settings className="h-4 w-4" aria-hidden="true" />
             <span>Branch settings</span>
+          </Link>
+          <Link href="/admin/reservations" className="btn-secondary text-xs">
+            <CalendarDays className="h-4 w-4 text-accent" aria-hidden="true" />
+            <span>Reservations</span>
           </Link>
           <Link href="/admin/orders" className="btn-secondary text-xs">
             <ClipboardList className="h-4 w-4 text-accent" aria-hidden="true" />

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
 import { useLanguage } from "@/lib/context/language-context";
-import { ArrowDown, ShoppingBag, Crown } from "lucide-react";
+import { ArrowDown, ShoppingBag, Crown, CalendarDays } from "lucide-react";
 
 export default function Hero() {
   const { openCart } = useCart();
@@ -45,6 +45,14 @@ export default function Hero() {
                 <ShoppingBag className="h-4 w-4" aria-hidden="true" />
                 <span className="whitespace-nowrap">{t("hero.orderPickup")}</span>
               </button>
+
+              <a
+                href="#reservation"
+                className="btn-outline w-full sm:w-auto justify-center flex items-center gap-2 border-gold text-accent hover:bg-gold/10"
+              >
+                <CalendarDays className="h-4 w-4 text-gold-dark" aria-hidden="true" />
+                <span className="whitespace-nowrap">{t("nav.reservation")}</span>
+              </a>
               
               <a
                 href="#menu"

@@ -12,6 +12,7 @@ import {
   LogOut,
   ExternalLink,
   Crown,
+  CalendarDays,
 } from "lucide-react";
 
 function AdminNav() {
@@ -63,6 +64,18 @@ function AdminNav() {
               >
                 <ClipboardList className="h-4 w-4" aria-hidden="true" />
                 <span>Orders</span>
+              </Link>
+
+              <Link
+                href="/admin/reservations"
+                className={`flex items-center gap-1.5 rounded-[var(--radius-card)] px-3 py-1.5 transition-colors duration-short ${
+                  pathname === "/admin/reservations"
+                    ? "bg-accent text-white font-semibold shadow-xs"
+                    : "text-muted hover:text-ink hover:bg-paper-3"
+                }`}
+              >
+                <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                <span>Reservations</span>
               </Link>
 
               <Link
@@ -155,6 +168,18 @@ function AdminNav() {
           >
             <ClipboardList className="h-3.5 w-3.5" aria-hidden="true" />
             <span>Orders</span>
+          </Link>
+
+          <Link
+            href="/admin/reservations"
+            className={`px-3 py-1.5 rounded-[var(--radius-card)] whitespace-nowrap flex items-center gap-1.5 ${
+              pathname === "/admin/reservations"
+                ? "bg-accent text-white font-semibold shadow-xs"
+                : "text-muted hover:text-ink hover:bg-paper-3"
+            }`}
+          >
+            <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>Reservations</span>
           </Link>
 
           <Link

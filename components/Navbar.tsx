@@ -14,6 +14,7 @@ import {
   Search,
   CheckCircle,
   ArrowRight,
+  CalendarDays,
 } from "lucide-react";
 
 export default function Navbar() {
@@ -95,33 +96,14 @@ export default function Navbar() {
             >
               {t("nav.menu")}
             </a>
-            {settings.showWeeklySpecial && (
-              <a
-                href="/#weekly-special"
-                onClick={(e) => handleNavClick(e, "/#weekly-special")}
-                className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
-              >
-                {t("nav.weeklySpecial")}
-              </a>
-            )}
-            {settings.showPartySpecial && (
-              <a
-                href="/#party-special"
-                onClick={(e) => handleNavClick(e, "/#party-special")}
-                className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
-              >
-                {t("nav.partySpecial")}
-              </a>
-            )}
-            {settings.showHeritageStory && (
-              <a
-                href="/#heritage"
-                onClick={(e) => handleNavClick(e, "/#heritage")}
-                className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
-              >
-                {t("nav.heritage")}
-              </a>
-            )}
+            <a
+              href="/#reservation"
+              onClick={(e) => handleNavClick(e, "/#reservation")}
+              className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus flex items-center gap-1.5"
+            >
+              <CalendarDays className="h-4 w-4 text-gold" aria-hidden="true" />
+              <span>{t("nav.reservation")}</span>
+            </a>
             {settings.showLocation && (
               <a
                 href="/#location"
@@ -233,38 +215,17 @@ export default function Navbar() {
                   <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                 </a>
 
-                {settings.showWeeklySpecial && (
-                  <a
-                    href="/#weekly-special"
-                    onClick={(e) => handleNavClick(e, "/#weekly-special")}
-                    className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
-                  >
-                    <span>{t("nav.weeklyBanner")}</span>
-                    <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                  </a>
-                )}
-
-                {settings.showPartySpecial && (
-                  <a
-                    href="/#party-special"
-                    onClick={(e) => handleNavClick(e, "/#party-special")}
-                    className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
-                  >
-                    <span>{t("nav.partyBanquets")}</span>
-                    <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                  </a>
-                )}
-
-                {settings.showHeritageStory && (
-                  <a
-                    href="/#heritage"
-                    onClick={(e) => handleNavClick(e, "/#heritage")}
-                    className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
-                  >
-                    <span>{t("nav.heritage")}</span>
-                    <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
-                  </a>
-                )}
+                <a
+                  href="/#reservation"
+                  onClick={(e) => handleNavClick(e, "/#reservation")}
+                  className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm font-semibold"
+                >
+                  <span className="flex items-center gap-2">
+                    <CalendarDays className="h-4 w-4 text-gold" aria-hidden="true" />
+                    <span>{t("nav.reservation")}</span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
+                </a>
 
                 {settings.showLocation && (
                   <a

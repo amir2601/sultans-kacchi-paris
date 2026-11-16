@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
-import { ArrowDown, ShoppingBag, Crown, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/lib/context/language-context";
+import { ArrowDown, ShoppingBag, Crown } from "lucide-react";
 
 export default function Hero() {
   const { openCart } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
 
   return (
     <section className="relative overflow-hidden border-b border-rule bg-paper py-10 sm:py-14 lg:py-16">
@@ -21,16 +23,16 @@ export default function Hero() {
             {settings.isHalalCertified && (
               <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-paper-2 px-3.5 py-1 text-xs font-semibold text-accent shadow-xs mb-4">
                 <Crown className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-                <span>100% Halal Authenticated · Paris 10e</span>
+                <span>{t("hero.halalTag")}</span>
               </div>
             )}
 
             <h1 className="font-display text-3xl sm:text-4xl lg:text-display-hero font-bold text-accent leading-tight sm:leading-none">
-              Royal Mughal Kacchi Banquet in Paris
+              {t("hero.headline")}
             </h1>
 
             <p className="mt-4 text-lead text-ink-2 max-w-[54ch] font-normal leading-relaxed text-sm sm:text-base">
-              Authentic slow-dum biryani infused with pure saffron, ghee, and twenty-one royal spices.
+              {t("hero.description")}
             </p>
 
             {/* Actions */}
@@ -41,21 +43,21 @@ export default function Hero() {
                 className="btn-primary w-full sm:w-auto justify-center"
               >
                 <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-                <span className="whitespace-nowrap">Order for pickup</span>
+                <span className="whitespace-nowrap">{t("hero.orderPickup")}</span>
               </button>
               
               <a
                 href="#menu"
                 className="btn-outline w-full sm:w-auto justify-center"
               >
-                <span className="whitespace-nowrap">Explore Paris menu</span>
+                <span className="whitespace-nowrap">{t("hero.exploreMenu")}</span>
                 <ArrowDown className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
 
             {/* Factual Paris Branch Note */}
             <div className="mt-6 sm:mt-8 border-t border-rule pt-4 text-xs text-muted flex flex-wrap items-center gap-2 sm:gap-3">
-              <span className="font-semibold text-ink">Service continuously:</span>
+              <span className="font-semibold text-ink">{t("hero.serviceContinuously")}</span>
               <span>{settings.openingHoursWeekdays} at {settings.address.split(",")[0]}.</span>
             </div>
           </div>
@@ -80,10 +82,10 @@ export default function Hero() {
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between rounded-[var(--radius-card)] border border-gold/40 bg-white/95 px-4 py-3 backdrop-blur-md shadow-md">
               <div>
                 <span className="font-display text-sm font-bold text-accent block">
-                  Signature Mutton Kacchi
+                  {t("hero.signatureTitle")}
                 </span>
                 <span className="text-[11px] text-muted">
-                  Aged basmati & tender mutton
+                  {t("hero.signatureSubtitle")}
                 </span>
               </div>
               <span className="font-display text-lg font-bold text-gold-dark">

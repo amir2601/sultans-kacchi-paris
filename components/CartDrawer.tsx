@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { X, Trash2, Plus, Minus, ShoppingBag, Clock, User, Phone, CheckCircle2, ArrowRight } from "lucide-react";
 
@@ -20,6 +21,7 @@ export default function CartDrawer() {
   } = useCart();
 
   const { settings } = useSettings();
+  const { t, language } = useLanguage();
 
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -50,12 +52,20 @@ export default function CartDrawer() {
   const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!customerName.trim() || !customerPhone.trim() || !pickupTime) {
-      setErrorMessage("Please complete your name, phone number, and pickup time.");
+      setErrorMessage(
+        language === "fr"
+          ? "Veuillez renseigner votre nom, numéro de téléphone et créneau horaire."
+          : "Please complete your name, phone number, and pickup time."
+      );
       return;
     }
 
     if (items.length === 0) {
-      setErrorMessage("Your takeaway bag is empty.");
+      setErrorMessage(
+        language === "fr"
+          ? "Votre sac à emporter est vide."
+          : "Your takeaway bag is empty."
+      );
       return;
     }
 
@@ -115,7 +125,7 @@ export default function CartDrawer() {
 
       clearCart();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to record order. Please try again.";
+      const msg = err instanceof Error ? err.message : (language === "fr" ? "Échec de l'enregistrement de la commande." : "Failed to record order. Please try again.");
       setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
@@ -150,10 +160,10 @@ export default function CartDrawer() {
             </div>
             <div>
               <h2 id="cart-drawer-title" className="font-display text-lg sm:text-xl font-bold text-accent">
-                Takeaway Bag
+                {t("cart.title")}
               </h2>
               <span className="text-xs text-muted">
-                {totalItems} {totalItems === 1 ? "specialty" : "specialties"} selected
+                {totalItems} {totalItems === 1 ? t("cart.specialtySelected") : t("cart.specialtiesSelected")}
               </span>
             </div>
           </div>
@@ -174,31 +184,31 @@ export default function CartDrawer() {
               <CheckCircle2 className="h-7 w-7 sm:h-8 sm:w-8" aria-hidden="true" />
             </div>
             <h3 className="font-display text-xl sm:text-2xl font-bold text-accent">
-              Order Confirmed for Pickup
+              {t("cart.confirmedTitle")}
             </h3>
             <p className="mt-2 text-xs sm:text-sm text-ink-2 max-w-[38ch]">
-              Thank you, {orderSuccess.name}. Your royal takeaway is scheduled for {orderSuccess.time}.
+              {t("cart.confirmedDesc", { name: orderSuccess.name, time: orderSuccess.time })}
             </p>
 
             <div className="mt-5 sm:mt-6 w-full rounded-[var(--radius-card)] border border-rule bg-paper-2 p-4 sm:p-5 text-left text-xs sm:text-sm space-y-2.5 shadow-xs">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-muted">Order reference</span>
+                <span className="text-xs text-muted">{t("cart.orderRef")}</span>
                 <span className="font-mono text-xs font-bold text-accent bg-paper-3 px-2 py-0.5 rounded border border-rule">
                   {orderSuccess.orderId}
                 </span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-muted">Payment mode</span>
-                <span className="font-medium text-ink">Pay on Pickup (Cash or Card)</span>
+                <span className="text-muted">{t("cart.paymentMode")}</span>
+                <span className="font-medium text-ink">{t("cart.payOnPickupBadge")}</span>
               </div>
               <div className="flex justify-between font-bold border-t border-rule-subtle pt-2 text-sm sm:text-base text-ink">
-                <span>Total to pay</span>
+                <span>{t("cart.totalToPay")}</span>
                 <span className="text-accent">€{orderSuccess.total.toFixed(2)}</span>
               </div>
             </div>
 
             <p className="mt-4 text-xs text-muted">
-              Collection counter: {settings.address}
+              {t("cart.collectionCounter")} {settings.address}
             </p>
 
             <div className="mt-6 w-full space-y-2.5 sm:space-y-3">
@@ -207,7 +217,7 @@ export default function CartDrawer() {
                 onClick={closeCart}
                 className="btn-primary w-full flex items-center justify-center gap-2 py-3"
               >
-                <span>Track live order preparation</span>
+                <span>{t("cart.trackOrder")}</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <button
@@ -215,7 +225,7 @@ export default function CartDrawer() {
                 onClick={handleReset}
                 className="btn-secondary w-full text-xs py-2.5"
               >
-                Close and return to menu
+                {t("cart.closeReturn")}
               </button>
             </div>
           </div>
@@ -224,16 +234,16 @@ export default function CartDrawer() {
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-paper-2 border border-rule text-muted mb-3">
               <ShoppingBag className="h-6 w-6" aria-hidden="true" />
             </div>
-            <p className="font-display text-lg font-bold text-accent">Your bag is empty</p>
+            <p className="font-display text-lg font-bold text-accent">{t("cart.emptyTitle")}</p>
             <p className="mt-2 text-xs text-muted max-w-[34ch] mx-auto">
-              Explore our Paris menu and add authentic Kacchi, Polau, or Party Banquets.
+              {t("cart.emptyDesc")}
             </p>
             <button
               type="button"
               onClick={closeCart}
               className="mt-6 btn-outline text-xs"
             >
-              Browse Paris specialties
+              {t("cart.browseSpecialties")}
             </button>
           </div>
         ) : (
@@ -241,57 +251,61 @@ export default function CartDrawer() {
             
             {/* Items List */}
             <div className="space-y-2.5 sm:space-y-3 max-h-[32vh] overflow-y-auto pr-1">
-              {items.map(({ item, quantity }) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-2.5 sm:p-3 text-sm shadow-xs"
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-ink truncate text-xs sm:text-sm">{item.name}</p>
-                    <p className="text-[11px] text-muted">€{Number(item.price).toFixed(2)} each</p>
-                  </div>
+              {items.map(({ item, quantity }) => {
+                const itemName = language === "fr" && item.name_fr ? item.name_fr : item.name;
 
-                  <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.id, quantity - 1)}
-                      aria-label={`Reduce quantity of ${item.name}`}
-                      className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
-                    >
-                      <Minus className="h-3 w-3" aria-hidden="true" />
-                    </button>
-                    <span className="w-5 text-center text-xs font-bold text-accent">
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.id, quantity + 1)}
-                      aria-label={`Increase quantity of ${item.name}`}
-                      className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
-                    >
-                      <Plus className="h-3 w-3" aria-hidden="true" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      aria-label={`Remove ${item.name}`}
-                      className="ml-1 text-muted hover:text-error transition-colors p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    </button>
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between gap-2.5 sm:gap-3 rounded-[var(--radius-card)] border border-rule bg-paper-2 p-2.5 sm:p-3 text-sm shadow-xs"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-ink truncate text-xs sm:text-sm">{itemName}</p>
+                      <p className="text-[11px] text-muted">€{Number(item.price).toFixed(2)} {t("cart.each")}</p>
+                    </div>
+
+                    <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, quantity - 1)}
+                        aria-label={`Reduce quantity of ${itemName}`}
+                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
+                      >
+                        <Minus className="h-3 w-3" aria-hidden="true" />
+                      </button>
+                      <span className="w-5 text-center text-xs font-bold text-accent">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, quantity + 1)}
+                        aria-label={`Increase quantity of ${itemName}`}
+                        className="rounded-[var(--radius-card)] border border-rule p-1 sm:p-1.5 hover:bg-paper-3 text-ink-2 min-w-[30px] min-h-[30px] flex items-center justify-center"
+                      >
+                        <Plus className="h-3 w-3" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        aria-label={`Remove ${itemName}`}
+                        className="ml-1 text-muted hover:text-error transition-colors p-1 min-w-[28px] min-h-[28px] flex items-center justify-center"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Total Summary */}
             <div className="border-t border-rule pt-3 sm:pt-4">
               <div className="flex items-center justify-between text-sm sm:text-base font-bold">
-                <span className="text-ink">Total takeaway amount</span>
+                <span className="text-ink">{t("cart.totalAmount")}</span>
                 <span className="font-display text-xl sm:text-2xl text-accent">€{totalAmount.toFixed(2)}</span>
               </div>
               <p className="mt-1 text-[11px] sm:text-xs text-muted">
-                Pay on pickup at the counter. All prices include French TVA & service charges.
+                {t("cart.payNotice")}
               </p>
             </div>
 
@@ -305,7 +319,7 @@ export default function CartDrawer() {
 
               <div>
                 <label htmlFor="customer-name" className="block text-xs font-semibold text-ink-2 mb-1">
-                  Customer full name
+                  {t("cart.customerName")}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-2.5 h-4 w-4 text-muted" aria-hidden="true" />
@@ -315,7 +329,7 @@ export default function CartDrawer() {
                     required
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="e.g. Jean Dupont"
+                    placeholder={t("cart.namePlaceholder")}
                     className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   />
                 </div>
@@ -323,7 +337,7 @@ export default function CartDrawer() {
 
               <div>
                 <label htmlFor="customer-phone" className="block text-xs font-semibold text-ink-2 mb-1">
-                  Phone number (for pickup SMS)
+                  {t("cart.customerPhone")}
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-2.5 h-4 w-4 text-muted" aria-hidden="true" />
@@ -333,7 +347,7 @@ export default function CartDrawer() {
                     required
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="e.g. +33 6 12 34 56 78"
+                    placeholder={t("cart.phonePlaceholder")}
                     className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   />
                 </div>
@@ -341,7 +355,7 @@ export default function CartDrawer() {
 
               <div>
                 <label htmlFor="pickup-time" className="block text-xs font-semibold text-ink-2 mb-1">
-                  Requested pickup slot
+                  {t("cart.pickupSlot")}
                 </label>
                 <div className="relative">
                   <Clock className="absolute left-3 top-2.5 h-4 w-4 text-muted pointer-events-none" aria-hidden="true" />
@@ -352,7 +366,7 @@ export default function CartDrawer() {
                     onChange={(e) => setPickupTime(e.target.value)}
                     className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2 pl-9 pr-3 text-base sm:text-xs text-ink focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
                   >
-                    <option value="">Select pickup time…</option>
+                    <option value="">{t("cart.selectSlot")}</option>
                     {settings.pickupSlots.map((slot) => (
                       <option key={slot} value={slot}>
                         {slot}
@@ -368,7 +382,7 @@ export default function CartDrawer() {
                   disabled={isSubmitting}
                   className="btn-primary w-full py-3 text-xs sm:text-sm font-bold min-h-[44px]"
                 >
-                  {isSubmitting ? "Submitting order…" : `Confirm takeaway order (€${totalAmount.toFixed(2)})`}
+                  {isSubmitting ? t("cart.submitting") : t("cart.confirmOrder", { total: `€${totalAmount.toFixed(2)}` })}
                 </button>
               </div>
             </form>
@@ -379,7 +393,7 @@ export default function CartDrawer() {
         {/* Footer info note */}
         <div className="border-t border-rule pt-3 sm:pt-4 text-center flex-shrink-0">
           <p className="text-[11px] sm:text-xs text-muted">
-            Pay on pickup at {settings.address.split(",")[0]}, 75010 Paris
+            {t("cart.counterNote", { address: settings.address.split(",")[0] })}
           </p>
         </div>
 

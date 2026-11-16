@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/context/cart-context";
 import { useSettings } from "@/lib/context/settings-context";
+import { useLanguage } from "@/lib/context/language-context";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import {
   ShoppingBag,
   Menu as MenuIcon,
@@ -17,6 +19,7 @@ import {
 export default function Navbar() {
   const { totalItems, openCart } = useCart();
   const { settings } = useSettings();
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Lock body scroll when mobile menu is open
@@ -72,17 +75,17 @@ export default function Navbar() {
 
             <div className="flex flex-col">
               <span className="font-display text-lg sm:text-2xl font-bold tracking-tight text-accent leading-none">
-                Sultan’s Kacchi
+                {t("nav.brandTitle")}
               </span>
               <span className="text-[10px] sm:text-xs font-medium text-muted mt-0.5 sm:mt-1">
-                Paris 10e · Maison Royale
+                {t("nav.brandSubtitle")}
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
           <nav
-            className="hidden lg:flex items-center gap-7 text-sm font-medium text-ink-2"
+            className="hidden lg:flex items-center gap-6 xl:gap-7 text-sm font-medium text-ink-2"
             aria-label="Main Navigation"
           >
             <a
@@ -90,7 +93,7 @@ export default function Navbar() {
               onClick={(e) => handleNavClick(e, "/#menu")}
               className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
             >
-              Paris Menu
+              {t("nav.menu")}
             </a>
             {settings.showWeeklySpecial && (
               <a
@@ -98,7 +101,7 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, "/#weekly-special")}
                 className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
               >
-                Weekly Special
+                {t("nav.weeklySpecial")}
               </a>
             )}
             {settings.showPartySpecial && (
@@ -107,7 +110,7 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, "/#party-special")}
                 className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
               >
-                Party Banquet
+                {t("nav.partySpecial")}
               </a>
             )}
             {settings.showHeritageStory && (
@@ -116,7 +119,7 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, "/#heritage")}
                 className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
               >
-                Royal Heritage
+                {t("nav.heritage")}
               </a>
             )}
             {settings.showLocation && (
@@ -125,7 +128,7 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, "/#location")}
                 className="hover:text-accent transition-colors duration-short ease-out focus-visible:outline-2 focus-visible:outline-focus"
               >
-                Location & Hours
+                {t("nav.location")}
               </a>
             )}
             <Link
@@ -133,27 +136,32 @@ export default function Navbar() {
               className="flex items-center gap-1.5 text-accent font-semibold hover:text-accent-light transition-colors duration-short focus-visible:outline-2 focus-visible:outline-focus"
             >
               <Search className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>Track Order</span>
+              <span>{t("nav.track")}</span>
             </Link>
           </nav>
 
-          {/* Actions (Cart & Mobile Hamburger) */}
+          {/* Actions (Language Switcher, Cart & Mobile Hamburger) */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop Language Selector */}
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
+
             <Link
               href="/admin"
-              className="hidden md:inline-flex text-xs font-semibold text-muted hover:text-accent transition-colors duration-short px-2 py-1 rounded border border-rule-subtle hover:border-gold"
+              className="hidden xl:inline-flex text-xs font-semibold text-muted hover:text-accent transition-colors duration-short px-2 py-1 rounded border border-rule-subtle hover:border-gold"
             >
-              Kitchen Admin
+              {t("nav.kitchenAdmin")}
             </Link>
 
             <button
               type="button"
               onClick={openCart}
-              aria-label={`Open takeaway bag, ${totalItems} items`}
+              aria-label={`${t("nav.takeawayBag")}, ${totalItems} items`}
               className="btn-primary px-3 py-2 sm:px-4 sm:py-2.5 text-xs sm:text-sm min-h-[38px]"
             >
               <ShoppingBag className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Takeaway Bag</span>
+              <span className="hidden sm:inline">{t("nav.takeawayBag")}</span>
               {totalItems > 0 && (
                 <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-xs font-bold text-accent-dark">
                   {totalItems}
@@ -199,12 +207,20 @@ export default function Navbar() {
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-rule-subtle">
                 <span className="font-display text-sm font-bold text-accent">
-                  Sultan’s Kacchi Navigation
+                  {t("nav.brandTitle")} Navigation
                 </span>
                 <span className="text-xs text-muted flex items-center gap-1">
                   <CheckCircle className="h-3.5 w-3.5 text-success" aria-hidden="true" />
-                  <span>100% Halal Paris</span>
+                  <span>{t("nav.halalBadge")}</span>
                 </span>
+              </div>
+
+              {/* Language Switcher in Mobile Drawer */}
+              <div className="pb-2">
+                <span className="text-[11px] font-semibold text-muted uppercase tracking-wider block mb-1.5">
+                  Language / Langue
+                </span>
+                <LanguageSwitcher variant="detailed" />
               </div>
 
               <nav className="flex flex-col space-y-1.5 text-base font-medium text-ink-2">
@@ -213,7 +229,7 @@ export default function Navbar() {
                   onClick={(e) => handleNavClick(e, "/#menu")}
                   className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm font-semibold"
                 >
-                  <span>Paris Menu Catalog</span>
+                  <span>{t("nav.menuCatalog")}</span>
                   <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                 </a>
 
@@ -223,7 +239,7 @@ export default function Navbar() {
                     onClick={(e) => handleNavClick(e, "/#weekly-special")}
                     className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
                   >
-                    <span>Weekly Chef’s Special</span>
+                    <span>{t("nav.weeklyBanner")}</span>
                     <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                   </a>
                 )}
@@ -234,7 +250,7 @@ export default function Navbar() {
                     onClick={(e) => handleNavClick(e, "/#party-special")}
                     className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
                   >
-                    <span>Party Special Banquets</span>
+                    <span>{t("nav.partyBanquets")}</span>
                     <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                   </a>
                 )}
@@ -245,7 +261,7 @@ export default function Navbar() {
                     onClick={(e) => handleNavClick(e, "/#heritage")}
                     className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
                   >
-                    <span>Royal Mughal Heritage</span>
+                    <span>{t("nav.heritage")}</span>
                     <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                   </a>
                 )}
@@ -256,7 +272,7 @@ export default function Navbar() {
                     onClick={(e) => handleNavClick(e, "/#location")}
                     className="px-3 py-2.5 rounded-[var(--radius-card)] hover:bg-paper-3 hover:text-accent transition-colors flex items-center justify-between text-sm"
                   >
-                    <span>Location & Kitchen Hours</span>
+                    <span>{t("nav.location")}</span>
                     <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
                   </a>
                 )}
@@ -268,7 +284,7 @@ export default function Navbar() {
                 >
                   <span className="flex items-center gap-2">
                     <Search className="h-4 w-4" aria-hidden="true" />
-                    <span>Track Your Takeaway Order</span>
+                    <span>{t("nav.trackMobile")}</span>
                   </span>
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
@@ -281,7 +297,7 @@ export default function Navbar() {
                 onClick={closeMobileMenu}
                 className="btn-secondary w-full text-center text-xs py-2.5"
               >
-                Kitchen Admin Portal
+                {t("nav.kitchenAdminPortal")}
               </Link>
               <p className="text-center text-xs text-muted">
                 {settings.address}

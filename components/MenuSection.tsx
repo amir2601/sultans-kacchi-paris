@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import { MenuItem } from "@/lib/supabase/types";
 import { useCart } from "@/lib/context/cart-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { Plus, Minus, Check, Search, ShoppingBag, ArrowRight, X } from "lucide-react";
 
 interface MenuSectionProps {
@@ -11,7 +12,8 @@ interface MenuSectionProps {
 }
 
 export default function MenuSection({ initialItems }: MenuSectionProps) {
-  const { addItem, updateQuantity, removeItem, items: cartItems, openCart, totalItems, totalAmount } = useCart();
+  const { addItem, updateQuantity, items: cartItems, openCart, totalItems, totalAmount } = useCart();
+  const { t, language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const tabsContainerRef = useRef<HTMLDivElement>(null);
@@ -43,12 +45,14 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
   const filteredItems = initialItems.filter((item) => {
     const matchesCategory =
       selectedCategory === "All" || item.category === selectedCategory;
+    const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
-      !searchQuery.trim() ||
-      item.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
-      (item.description &&
-        item.description.toLowerCase().includes(searchQuery.toLowerCase().trim())) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase().trim());
+      !q ||
+      item.name.toLowerCase().includes(q) ||
+      (item.name_fr && item.name_fr.toLowerCase().includes(q)) ||
+      (item.description && item.description.toLowerCase().includes(q)) ||
+      (item.description_fr && item.description_fr.toLowerCase().includes(q)) ||
+      item.category.toLowerCase().includes(q);
     return matchesCategory && matchesSearch;
   });
 
@@ -70,16 +74,16 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6 pb-6 sm:pb-8 border-b border-rule">
           <div>
             <h2 className="font-display text-2xl sm:text-3xl lg:text-section-head font-bold text-accent">
-              The Authentic Paris Menu
+              {t("menu.sectionHead")}
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-muted max-w-[54ch] leading-relaxed">
-              Prepared fresh daily in sealed copper degs with halal French lamb, pure ghee, and aged basmati. Prices include all French taxes.
+              {t("menu.sectionSub")}
             </p>
           </div>
 
           <div className="text-xs text-muted flex flex-wrap items-center gap-2">
-            <span className="font-semibold text-ink">46 Artisanal Specialties</span>
-            <span>· Pay on Pickup Available</span>
+            <span className="font-semibold text-ink">{t("menu.specialtiesCount")}</span>
+            <span>· {t("menu.payOnPickup")}</span>
           </div>
         </div>
 
@@ -91,8 +95,8 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dishes, naan, desserts, lassi…"
-              aria-label="Search Paris menu dishes"
+              placeholder={t("menu.searchPlaceholder")}
+              aria-label={t("menu.searchLabel")}
               className="w-full rounded-[var(--radius-card)] border border-rule bg-paper-2 py-2 pl-9 pr-9 text-xs sm:text-sm text-ink placeholder:text-muted focus:border-accent focus:bg-paper focus-visible:outline-2 focus-visible:outline-focus"
             />
             {searchQuery && (
@@ -108,7 +112,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
           </div>
           
           <span className="text-xs text-muted font-medium whitespace-nowrap">
-            {filteredItems.length} {filteredItems.length === 1 ? "dish" : "dishes"}
+            {filteredItems.length} {filteredItems.length === 1 ? t("menu.dishesSingular") : t("menu.dishesPlural")}
           </span>
         </div>
 
@@ -124,6 +128,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;
               const count = getCategoryCount(cat);
+              const label = t(`cat.${cat}`);
               return (
                 <button
                   key={cat}
@@ -136,7 +141,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                       : "bg-paper-2 text-ink-2 hover:bg-paper-3 hover:text-accent border border-rule"
                   }`}
                 >
-                  <span>{cat}</span>
+                  <span>{label}</span>
                   <span
                     className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                       isActive ? "bg-white/20 text-white" : "bg-paper-3 text-muted"
@@ -153,9 +158,9 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
         {/* Empty State */}
         {filteredItems.length === 0 && (
           <div className="py-16 text-center">
-            <p className="font-display text-lg font-bold text-accent">No dishes found</p>
+            <p className="font-display text-lg font-bold text-accent">{t("menu.noDishesFound")}</p>
             <p className="mt-1 text-xs text-muted">
-              Try adjusting your search query or choose another category above.
+              {t("menu.noDishesSub")}
             </p>
             <button
               type="button"
@@ -165,7 +170,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
               }}
               className="mt-4 btn-secondary text-xs"
             >
-              Reset filters
+              {t("menu.resetFilters")}
             </button>
           </div>
         )}
@@ -174,6 +179,8 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
         <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {filteredItems.map((item) => {
             const inCartQty = getItemQuantityInCart(item.id);
+            const itemName = language === "fr" && item.name_fr ? item.name_fr : item.name;
+            const itemDesc = language === "fr" && item.description_fr ? item.description_fr : (item.description || "Authentic recipe crafted with clarified butter, slow steam, and roasted spices.");
 
             return (
               <article
@@ -184,14 +191,14 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-paper-3">
                   <Image
                     src={item.image_url || "/images/biryani-mouton.jpg"}
-                    alt={item.name}
+                    alt={itemName}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-long"
                   />
                   {item.is_weekly_special && (
                     <span className="absolute top-2.5 left-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold text-white shadow-xs">
-                      Special Selection
+                      {t("menu.specialSelection")}
                     </span>
                   )}
                   <span className="absolute bottom-2.5 right-2.5 rounded-[var(--radius-card)] bg-white/95 px-2.5 py-1 font-display text-sm sm:text-base font-bold text-accent shadow-xs border border-gold/40">
@@ -204,17 +211,17 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="font-display text-base sm:text-lg font-bold text-ink group-hover:text-accent transition-colors duration-short">
-                        {item.name}
+                        {itemName}
                       </h3>
                     </div>
                     <p className="mt-1.5 text-xs leading-relaxed text-muted line-clamp-2 sm:line-clamp-3">
-                      {item.description || "Authentic recipe crafted with clarified butter, slow steam, and roasted spices."}
+                      {itemDesc}
                     </p>
                   </div>
 
                   <div className="mt-4 sm:mt-5 flex items-center justify-between border-t border-rule-subtle pt-3">
                     <span className="text-[11px] text-muted">
-                      {item.is_available ? "Fresh today" : "Sold out"}
+                      {item.is_available ? t("menu.freshToday") : t("menu.soldOut")}
                     </span>
 
                     {/* Interactive Mobile-Friendly Button / Stepper */}
@@ -223,7 +230,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, inCartQty - 1)}
-                          aria-label={`Decrease ${item.name} in bag`}
+                          aria-label={`Decrease ${itemName} in bag`}
                           className="h-8 w-8 flex items-center justify-center rounded text-accent hover:bg-paper-2 active:scale-95 transition-transform"
                         >
                           <Minus className="h-3.5 w-3.5" aria-hidden="true" />
@@ -234,7 +241,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                         <button
                           type="button"
                           onClick={() => addItem(item, false)}
-                          aria-label={`Increase ${item.name} in bag`}
+                          aria-label={`Increase ${itemName} in bag`}
                           className="h-8 w-8 flex items-center justify-center rounded text-accent hover:bg-paper-2 active:scale-95 transition-transform"
                         >
                           <Plus className="h-3.5 w-3.5" aria-hidden="true" />
@@ -245,11 +252,11 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
                         type="button"
                         onClick={() => addItem(item, false)}
                         disabled={!item.is_available}
-                        aria-label={`Add ${item.name} to takeaway bag`}
+                        aria-label={`Add ${itemName} to takeaway bag`}
                         className="btn-primary text-xs py-2 px-3 sm:px-4 min-h-[36px]"
                       >
                         <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-                        <span>Add to bag</span>
+                        <span>{t("menu.addToBag")}</span>
                       </button>
                     )}
                   </div>
@@ -274,7 +281,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
               </div>
               <div>
                 <span className="text-xs font-bold block text-gold-light leading-none">
-                  {totalItems} {totalItems === 1 ? "specialty" : "specialties"} in bag
+                  {totalItems} {totalItems === 1 ? t("menu.floatingSpecialtySingular") : t("menu.floatingSpecialtyPlural")} {t("menu.floatingInBag")}
                 </span>
                 <span className="font-display text-base font-bold text-white">
                   €{totalAmount.toFixed(2)}
@@ -287,7 +294,7 @@ export default function MenuSection({ initialItems }: MenuSectionProps) {
               onClick={openCart}
               className="bg-white text-accent hover:bg-gold-light hover:text-accent-dark font-bold text-xs px-4 py-2 rounded-[var(--radius-card)] flex items-center gap-1.5 shadow-md active:scale-95 transition-transform min-h-[38px]"
             >
-              <span>View Bag</span>
+              <span>{t("menu.viewBag")}</span>
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </div>

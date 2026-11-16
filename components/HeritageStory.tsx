@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useLanguage } from "@/lib/context/language-context";
 
 export default function HeritageStory() {
+  const { t } = useLanguage();
+
   return (
     <section id="heritage" className="border-b border-rule bg-paper py-12 sm:py-16 lg:py-20">
       <div className="container">
@@ -23,10 +28,10 @@ export default function HeritageStory() {
             />
             <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 rounded-[var(--radius-card)] border border-gold/30 bg-white/95 p-3 sm:p-4 backdrop-blur-md shadow-sm">
               <span className="font-display text-xs sm:text-sm font-bold text-accent block">
-                The Dum Pukht Royal Tradition
+                {t("heritage.dumPukht")}
               </span>
               <p className="mt-1 text-[11px] sm:text-xs text-muted leading-relaxed">
-                Sealed copper degs, pure ghee, and slow steam cooking over wood fire coals without artificial colours.
+                {t("heritage.dumPukhtDesc")}
               </p>
             </div>
           </div>
@@ -34,25 +39,25 @@ export default function HeritageStory() {
           {/* Editorial Text */}
           <div className="flex flex-col items-start">
             <h2 className="font-display text-2xl sm:text-3xl lg:text-section-head font-bold text-accent">
-              Mughal Banquet Heritage in Paris
+              {t("heritage.headline")}
             </h2>
 
             <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-ink-2 max-w-[55ch]">
-              Kacchi biryani originated in the imperial Mughal courts, where raw cuts of marinated spring lamb were layered under fragrant basmati and sealed with flour dough. Steam alone coaxes tenderness from the meat and perfumed richness from the rice.
+              {t("heritage.p1")}
             </p>
 
             <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-ink-2 max-w-[55ch]">
-              At Sultan’s Kacchi Paris, we honour this uncompromising culinary manuscript daily. We pair French heritage butchery with hand-ground spices and aged saffron, delivering an authentic feast packaged with care for takeaway dining across Paris.
+              {t("heritage.p2")}
             </p>
 
             <div className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-6 border-t border-rule pt-5 sm:pt-6 w-full">
               <div className="luxury-card p-3 sm:p-4 bg-paper-2">
-                <span className="text-[11px] sm:text-xs text-muted block font-medium">Grain Selection</span>
-                <span className="font-display text-sm sm:text-base font-bold text-accent mt-0.5 sm:mt-1 block">Aged Kalijeera & Basmati</span>
+                <span className="text-[11px] sm:text-xs text-muted block font-medium">{t("heritage.grainTitle")}</span>
+                <span className="font-display text-sm sm:text-base font-bold text-accent mt-0.5 sm:mt-1 block">{t("heritage.grainVal")}</span>
               </div>
               <div className="luxury-card p-3 sm:p-4 bg-paper-2">
-                <span className="text-[11px] sm:text-xs text-muted block font-medium">Halal Purity</span>
-                <span className="font-display text-sm sm:text-base font-bold text-accent mt-0.5 sm:mt-1 block">100% Certified Paris</span>
+                <span className="text-[11px] sm:text-xs text-muted block font-medium">{t("heritage.halalTitle")}</span>
+                <span className="font-display text-sm sm:text-base font-bold text-accent mt-0.5 sm:mt-1 block">{t("heritage.halalVal")}</span>
               </div>
             </div>
           </div>

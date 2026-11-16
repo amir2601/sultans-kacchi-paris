@@ -1,10 +1,12 @@
 "use client";
 
 import { useSettings } from "@/lib/context/settings-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { MapPin, Clock, Phone, Mail, ExternalLink } from "lucide-react";
 
 export default function LocationHours() {
   const { settings } = useSettings();
+  const { t } = useLanguage();
 
   return (
     <section id="location" className="border-b border-rule bg-paper py-12 sm:py-16 lg:py-20">
@@ -12,10 +14,10 @@ export default function LocationHours() {
         
         <div className="text-center max-w-xl mx-auto mb-8 sm:mb-12">
           <h2 className="font-display text-2xl sm:text-3xl lg:text-section-head font-bold text-accent">
-            Location and Service Hours
+            {t("loc.headline")}
           </h2>
           <p className="mt-2 text-xs sm:text-sm text-muted">
-            Visit our takeaway counter in the tenth arrondissement of Paris or order ahead for expedited collection.
+            {t("loc.description")}
           </p>
         </div>
 
@@ -28,7 +30,7 @@ export default function LocationHours() {
                 <MapPin className="h-5 w-5" aria-hidden="true" />
               </div>
               <h3 className="mt-4 font-display text-lg sm:text-xl font-bold text-accent">
-                Paris Address
+                {t("loc.addressTitle")}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-2 font-medium">
                 {settings.address}
@@ -45,7 +47,7 @@ export default function LocationHours() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:text-accent-light transition-colors"
               >
-                <span>Open in Google Maps</span>
+                <span>{t("loc.openMaps")}</span>
                 <ExternalLink className="h-3 w-3" aria-hidden="true" />
               </a>
             </div>
@@ -58,20 +60,20 @@ export default function LocationHours() {
                 <Clock className="h-5 w-5" aria-hidden="true" />
               </div>
               <h3 className="mt-4 font-display text-lg sm:text-xl font-bold text-accent">
-                Kitchen Service Hours
+                {t("loc.hoursTitle")}
               </h3>
               <div className="mt-3 space-y-2 text-xs sm:text-sm text-ink-2">
                 <div className="flex justify-between border-b border-rule-subtle pb-1.5">
-                  <span>Monday to Thursday</span>
+                  <span>{t("loc.monThu")}</span>
                   <span className="font-semibold text-accent">{settings.openingHoursWeekdays}</span>
                 </div>
                 <div className="flex justify-between border-b border-rule-subtle pb-1.5">
-                  <span>Friday to Sunday</span>
+                  <span>{t("loc.friSun")}</span>
                   <span className="font-semibold text-accent">{settings.openingHoursWeekends}</span>
                 </div>
               </div>
               <div className="mt-4 border-t border-rule-subtle pt-3 text-xs text-muted">
-                Fresh hot dum deg opened continuously throughout service.
+                {t("loc.freshNotice")}
               </div>
             </div>
           </div>
@@ -83,7 +85,7 @@ export default function LocationHours() {
                 <Phone className="h-5 w-5" aria-hidden="true" />
               </div>
               <h3 className="mt-4 font-display text-lg sm:text-xl font-bold text-accent">
-                Direct Contact
+                {t("loc.contactTitle")}
               </h3>
               <div className="mt-3 space-y-2 text-xs sm:text-sm text-ink-2">
                 <div className="flex items-center gap-2">
@@ -100,7 +102,7 @@ export default function LocationHours() {
                 </div>
               </div>
               <div className="mt-4 border-t border-rule-subtle pt-3 text-xs text-muted">
-                Catering and large banquets: order 24 hours in advance.
+                {t("loc.cateringNotice")}
               </div>
             </div>
 
@@ -112,7 +114,7 @@ export default function LocationHours() {
                   rel="noreferrer"
                   className="rounded-[var(--radius-card)] border border-rule px-3 py-1.5 text-xs text-muted hover:text-accent hover:border-gold transition-colors"
                 >
-                  Facebook Page
+                  {t("loc.facebook")}
                 </a>
               )}
               {settings.instagramUrl && (
@@ -122,7 +124,7 @@ export default function LocationHours() {
                   rel="noreferrer"
                   className="rounded-[var(--radius-card)] border border-rule px-3 py-1.5 text-xs text-muted hover:text-accent hover:border-gold transition-colors"
                 >
-                  Instagram
+                  {t("loc.instagram")}
                 </a>
               )}
             </div>

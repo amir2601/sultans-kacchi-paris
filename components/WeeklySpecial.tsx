@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { MenuItem } from "@/lib/supabase/types";
 import { useCart } from "@/lib/context/cart-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { Plus, Check, Crown } from "lucide-react";
 import { useState } from "react";
 
@@ -12,6 +13,7 @@ interface WeeklySpecialProps {
 
 export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
   const { addItem } = useCart();
+  const { t, language } = useLanguage();
   const [justAdded, setJustAdded] = useState(false);
 
   const handleAdd = () => {
@@ -19,6 +21,9 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
   };
+
+  const displayName = language === "fr" && specialItem.name_fr ? specialItem.name_fr : specialItem.name;
+  const displayDesc = language === "fr" && specialItem.description_fr ? specialItem.description_fr : specialItem.description;
 
   return (
     <section id="weekly-special" className="border-b border-rule bg-paper-3/50 py-10 sm:py-16">
@@ -30,14 +35,14 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-card)] border border-gold/40 shadow-sm">
               <Image
                 src={specialItem.image_url || "/images/biryani-mouton.jpg"}
-                alt={specialItem.name}
+                alt={displayName}
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover object-center"
               />
               <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-bold text-white shadow-sm">
                 <Crown className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-                <span>Chef’s Weekly Special</span>
+                <span>{t("weekly.chefBadge")}</span>
               </div>
             </div>
 
@@ -45,18 +50,18 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
             <div className="flex flex-col items-start">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-gold-dark">
-                  Maison Royale Selection
+                  {t("weekly.maisonSelection")}
                 </span>
                 <span className="h-1 w-1 rounded-full bg-gold" aria-hidden="true" />
-                <span className="text-xs font-medium text-muted">Authentic Old Dhaka Recipe</span>
+                <span className="text-xs font-medium text-muted">{t("weekly.oldDhakaRecipe")}</span>
               </div>
 
               <h2 className="mt-2 font-display text-2xl sm:text-3xl lg:text-section-head font-bold text-accent">
-                {specialItem.name}
+                {displayName}
               </h2>
 
               <p className="mt-3 sm:mt-4 text-sm sm:text-base leading-relaxed text-ink-2 max-w-[55ch]">
-                {specialItem.description ||
+                {displayDesc ||
                   "Aged basmati rice sealed with tender spring lamb, caramelized potato, saffron ghee, and whole spices in a traditional sealed deg."}
               </p>
 
@@ -65,7 +70,7 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
                   €{Number(specialItem.price).toFixed(2)}
                 </span>
                 <span className="text-xs text-muted font-medium">
-                  Service charge and French TVA included
+                  {t("weekly.tvaNotice")}
                 </span>
               </div>
 
@@ -79,12 +84,12 @@ export default function WeeklySpecial({ specialItem }: WeeklySpecialProps) {
                   {justAdded ? (
                     <span className="whitespace-nowrap flex items-center gap-1.5">
                       <Check className="h-4 w-4" aria-hidden="true" />
-                      <span>Added to bag</span>
+                      <span>{t("weekly.addedToBag")}</span>
                     </span>
                   ) : (
                     <span className="whitespace-nowrap flex items-center gap-1.5">
                       <Plus className="h-4 w-4" aria-hidden="true" />
-                      <span>Order special</span>
+                      <span>{t("weekly.orderButton")}</span>
                     </span>
                   )}
                 </button>

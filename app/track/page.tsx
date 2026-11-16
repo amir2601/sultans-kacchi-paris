@@ -9,6 +9,7 @@ import CartDrawer from "@/components/CartDrawer";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase/client";
 import { Order, OrderStatus } from "@/lib/supabase/types";
 import { useSettings } from "@/lib/context/settings-context";
+import { useLanguage } from "@/lib/context/language-context";
 import {
   Search,
   Clock,
@@ -24,6 +25,7 @@ import {
 function TrackOrderContent() {
   const searchParams = useSearchParams();
   const { settings } = useSettings();
+  const { t, language } = useLanguage();
   const [orderIdInput, setOrderIdInput] = useState("");
   const [currentOrder, setCurrentOrder] = useState<Order | null>(null);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
@@ -90,7 +92,7 @@ function TrackOrderContent() {
       setCurrentOrder(found);
     } else {
       setErrorNotice(
-        `Order "${cleanId}" could not be located. Please verify your reference code or ask at the takeaway counter.`
+        t("track.notFound", { id: cleanId })
       );
     }
     setIsSearching(false);
@@ -101,11 +103,11 @@ function TrackOrderContent() {
     searchOrderById(orderIdInput);
   };
 
-  const statusSteps: { key: OrderStatus; label: string; desc: string }[] = [
-    { key: "Pending", label: "Kitchen Queued", desc: "Order recorded in Paris kitchen system" },
-    { key: "Preparing", label: "In Kitchen", desc: "Dum deg opened and dishes packed hot" },
-    { key: "Ready", label: "Ready for Pickup", desc: "Waiting for you at 28 Rue du Faubourg Saint-Denis" },
-    { key: "Completed", label: "Collected", desc: "Handed over to customer" },
+  const statusSteps: { key: OrderStatus; labelKey: string; descKey: string }[] = [
+    { key: "Pending", labelKey: "track.step1", descKey: "track.step1Desc" },
+    { key: "Preparing", labelKey: "track.step2", descKey: "track.step2Desc" },
+    { key: "Ready", labelKey: "track.step3", descKey: "track.step3Desc" },
+    { key: "Completed", labelKey: "track.step4", descKey: "track.step4Desc" },
   ];
 
   const getStepState = (stepKey: OrderStatus) => {
@@ -129,7 +131,7 @@ function TrackOrderContent() {
           className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-accent font-medium transition-colors duration-short"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Return to Paris menu</span>
+          <span>{t("track.returnMenu")}</span>
         </Link>
       </div>
 
@@ -139,10 +141,10 @@ function TrackOrderContent() {
           <ChefHat className="h-6 w-6" aria-hidden="true" />
         </div>
         <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-semibold text-ink">
-          Track Your Takeaway Order
+          {t("track.headline")}
         </h1>
         <p className="mt-2 text-xs sm:text-sm text-muted">
-          Enter your unique order reference code below to check live kitchen preparation status.
+          {t("track.subheadline")}
         </p>
       </div>
 
@@ -156,7 +158,7 @@ function TrackOrderContent() {
               required
               value={orderIdInput}
               onChange={(e) => setOrderIdInput(e.target.value)}
-              placeholder="Enter your Order ID (e.g. SKP-7K92)"
+              placeholder={t("track.inputPlaceholder")}
               className="w-full rounded-[var(--radius-card)] border border-rule bg-paper py-2.5 pl-10 pr-4 text-base sm:text-sm text-ink placeholder:text-muted focus:border-accent focus-visible:outline-2 focus-visible:outline-focus"
             />
           </div>
@@ -165,7 +167,7 @@ function TrackOrderContent() {
             disabled={isSearching}
             className="btn-primary min-h-[44px]"
           >
-            {isSearching ? "Searching…" : "Track live status"}
+            {isSearching ? t("track.searching") : t("track.submitBtn")}
           </button>
         </form>
 
@@ -179,7 +181,7 @@ function TrackOrderContent() {
         {/* Recent orders pill selector */}
         {recentOrders.length > 0 && (
           <div className="mt-6 border-t border-rule-subtle pt-4">
-            <span className="text-xs text-muted block mb-2">Recent orders from this device:</span>
+            <span className="text-xs text-muted block mb-2">{t("track.recentOrders")}</span>
             <div className="flex flex-wrap gap-2">
               {recentOrders.map((ord) => (
                 <button
@@ -205,22 +207,22 @@ function TrackOrderContent() {
 
       {/* Order Status Display Card */}
       {currentOrder && (
-        <div className="luxury-card p-6 md:p-10 space-y-8">
+        <div className="luxury-card p-5 sm:p-6 md:p-10 space-y-6 sm:space-y-8">
           
           {/* Card Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-rule pb-6">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted">Order reference</span>
+                <span className="text-xs text-muted">{t("track.orderRef")}</span>
                 <span className="font-mono text-xs font-bold text-accent bg-paper-3 px-2 py-0.5 rounded border border-rule">
                   {currentOrder.id}
                 </span>
               </div>
-              <h2 className="mt-2 font-display text-2xl font-semibold text-ink">
+              <h2 className="mt-2 font-display text-xl sm:text-2xl font-semibold text-ink">
                 {currentOrder.customer_name}
               </h2>
               <p className="text-xs text-muted mt-0.5">
-                Contact: {currentOrder.customer_phone}
+                {t("track.contact")} {currentOrder.customer_phone}
               </p>
             </div>
 
@@ -232,11 +234,11 @@ function TrackOrderContent() {
                 title="Refresh order telemetry"
               >
                 <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
-                <span>Refresh</span>
+                <span>{t("track.refresh")}</span>
               </button>
               <div className="text-right">
-                <span className="text-xs text-muted block">Takeaway total</span>
-                <span className="font-display text-2xl font-bold text-accent">
+                <span className="text-xs text-muted block">{t("track.takeawayTotal")}</span>
+                <span className="font-display text-xl sm:text-2xl font-bold text-accent">
                   €{Number(currentOrder.total_amount).toFixed(2)}
                 </span>
               </div>
@@ -245,11 +247,11 @@ function TrackOrderContent() {
 
           {/* Progress Timeline */}
           <div>
-            <h3 className="text-xs font-semibold text-muted mb-6">
-              Live preparation progress
+            <h3 className="text-xs font-semibold text-muted mb-4 sm:mb-6">
+              {t("track.liveProgress")}
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 relative">
               {statusSteps.map((st, idx) => {
                 const state = getStepState(st.key);
                 const isCurrent = state === "current";
@@ -258,7 +260,7 @@ function TrackOrderContent() {
                 return (
                   <div
                     key={st.key}
-                    className={`rounded-[var(--radius-card)] p-4 border transition-colors duration-short ${
+                    className={`rounded-[var(--radius-card)] p-3.5 sm:p-4 border transition-colors duration-short ${
                       isCurrent
                         ? "border-accent bg-accent/5 ring-1 ring-accent"
                         : isCompleted
@@ -287,11 +289,11 @@ function TrackOrderContent() {
                           isCurrent ? "text-accent" : isCompleted ? "text-success" : "text-muted"
                         }`}
                       >
-                        {st.label}
+                        {t(st.labelKey)}
                       </span>
                     </div>
                     <p className="mt-2 text-xs text-muted leading-relaxed">
-                      {st.desc}
+                      {t(st.descKey)}
                     </p>
                   </div>
                 );
@@ -300,22 +302,22 @@ function TrackOrderContent() {
 
             {currentOrder.status === "Ready" && (
               <div className="mt-6 rounded-[var(--radius-card)] border border-gold bg-gold/10 p-4 text-center">
-                <p className="font-display text-lg font-medium text-accent">
-                  Your order is packed hot and ready for collection!
+                <p className="font-display text-base sm:text-lg font-medium text-accent">
+                  {t("track.readyBanner")}
                 </p>
                 <p className="text-xs text-muted mt-1">
-                  Please proceed to the takeaway counter at 28 Rue du Faubourg Saint-Denis, 75010 Paris.
+                  {t("track.readyBannerSub")}
                 </p>
               </div>
             )}
           </div>
 
           {/* Details & Location Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-rule pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 border-t border-rule pt-6">
             {/* Ordered Dishes Summary */}
             <div>
               <h4 className="font-display text-base font-semibold text-ink mb-3">
-                Dishes in this order
+                {t("track.dishesTitle")}
               </h4>
               <div className="space-y-2 border border-rule-subtle rounded-[var(--radius-card)] p-4 bg-paper-3/30 text-sm">
                 {currentOrder.items_json?.map((item, idx) => (
@@ -329,7 +331,7 @@ function TrackOrderContent() {
                   </div>
                 ))}
                 <div className="border-t border-rule-subtle pt-2 mt-2 flex justify-between font-bold text-sm text-ink">
-                  <span>Total (TVA incluse)</span>
+                  <span>{t("track.totalTva")}</span>
                   <span className="text-accent">€{Number(currentOrder.total_amount).toFixed(2)}</span>
                 </div>
               </div>
@@ -338,13 +340,13 @@ function TrackOrderContent() {
             {/* Collection Counter Details */}
             <div>
               <h4 className="font-display text-base font-semibold text-ink mb-3">
-                Collection details
+                {t("track.collectionDetails")}
               </h4>
               <div className="space-y-3 border border-rule-subtle rounded-[var(--radius-card)] p-4 bg-paper-3/30 text-xs">
                 <div className="flex items-start gap-2.5">
                   <Clock className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
                   <div>
-                    <span className="font-medium text-ink block">Scheduled pickup slot</span>
+                    <span className="font-medium text-ink block">{t("track.pickupSlot")}</span>
                     <span className="text-muted">{currentOrder.pickup_time}</span>
                   </div>
                 </div>
@@ -354,15 +356,15 @@ function TrackOrderContent() {
                   <div>
                     <span className="font-medium text-ink block">{settings.name}</span>
                     <span className="text-muted leading-relaxed block">{settings.address}</span>
-                    <span className="text-muted block mt-0.5">Métro: {settings.metro}</span>
+                    <span className="text-muted block mt-0.5">{t("footer.metro")} {settings.metro}</span>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-2.5">
                   <ShoppingBag className="h-4 w-4 text-accent flex-shrink-0 mt-0.5" aria-hidden="true" />
                   <div>
-                    <span className="font-medium text-ink block">Payment notice</span>
-                    <span className="text-muted">Pay at pickup counter (Cards & Cash accepted).</span>
+                    <span className="font-medium text-ink block">{t("track.paymentNotice")}</span>
+                    <span className="text-muted">{t("track.paymentNoticeDesc")}</span>
                   </div>
                 </div>
               </div>
@@ -377,11 +379,13 @@ function TrackOrderContent() {
 }
 
 export default function TrackOrderPage() {
+  const { t } = useLanguage();
+
   return (
     <main className="min-h-screen bg-paper text-ink flex flex-col justify-between">
       <Navbar />
       <div className="flex-1">
-        <Suspense fallback={<div className="container py-20 text-center text-sm text-muted">Loading order tracker…</div>}>
+        <Suspense fallback={<div className="container py-20 text-center text-sm text-muted">{t("track.loading")}</div>}>
           <TrackOrderContent />
         </Suspense>
       </div>

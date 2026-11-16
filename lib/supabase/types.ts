@@ -1,8 +1,11 @@
 export interface MenuItem {
   id: string;
   name: string;
+  name_fr?: string | null;
   category: string;
+  category_fr?: string | null;
   description: string | null;
+  description_fr?: string | null;
   price: number;
   image_url: string | null;
   is_weekly_special: boolean;
